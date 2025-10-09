@@ -25,10 +25,13 @@ private :
 	void Move(float elapsedTime, float vx, float vz, float speed);
 	//ˆÚ“®“ü—Íˆ—
 	void InputMove(float elapsedTime);
+	void Turn(float elapsedTime, float vx, float vz, float speed);
+
 
 private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
+	float turnSpeed = DirectX::XMConvertToRadians(720);
 };
 
 

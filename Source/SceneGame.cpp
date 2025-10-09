@@ -1,6 +1,9 @@
 #include "Graphics/Graphics.h"
 #include "SceneGame.h"
 #include"Camera.h"
+#include "EnemyManager.h"
+#include "Enemycar.h"
+
 
 // 初期化
 void SceneGame::Initialize()
@@ -24,11 +27,21 @@ void SceneGame::Initialize()
 		0.1f,
 		1000.0f);
 	cameraController = new CameraController();
+
+	//エネミー初期化
+	EnemyManager& enemyManager = EnemyManager::Instance();
+	Enemycar* car = new Enemycar();
+	car->SetPosition(DirectX::XMFLOAT3(0, 0, 5));
+	enemyManager.Register(car);
 }
 
 // 終了化
 void SceneGame::Finalize()
 {
+  
+	//エネミー終了化
+	EnemyManager::Instance().Clear();
+
 	//カメラコントローラー終了化
 	if (cameraController != nullptr) {
 		delete cameraController;
@@ -63,6 +76,9 @@ void SceneGame::Update(float elapsedTime)
 
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
+
+	//エネミー更新処理
+	EnemyManager::Instance().Update(elapsedTime);
 }
 
 // 描画処理
@@ -97,9 +113,16 @@ void SceneGame::Render()
 
 		//ステージ描画
 		stage->Render(dc, shader);
+
+		//エネミー描画
+		EnemyManager::Instance().Render(dc, shader);
+
 		//プレイヤー描画
 		player->Render(dc, shader);
+
+		//シェーダー終了
 		shader->End(dc);
+
 	}
 
 
