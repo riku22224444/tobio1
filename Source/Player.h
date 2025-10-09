@@ -13,6 +13,10 @@ public:
 
 	//デバック用GUI描画
 	void DrawDebugGUI();
+
+	//デバックプリミティブ描画
+	void DrawDebugPrimitive();
+
 	//更新処理
 	void Update(float elapsedTime);
 	//描画処理

@@ -130,6 +130,10 @@ void SceneGame::Render()
 
 	// 3Dデバッグ描画
 	{
+
+		// プレイヤーデバッグプリミティブ描画
+		player->DrawDebugPrimitive();
+
 		// ラインレンダラ描画実行
 		graphics.GetLineRenderer()->Render(dc, rc.view, rc.projection);
 

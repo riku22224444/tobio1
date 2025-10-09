@@ -2,6 +2,9 @@
 #include"Input/Input.h"
 #include<imgui.h>
 #include"Camera.h"
+#include"Graphics/Graphics.h"
+
+
 
 //コンストラクタ
 Player::Player()
@@ -39,6 +42,18 @@ void Player::Update(float elapsedTime) {
 void Player::Render(ID3D11DeviceContext* dc, Shader* shader) {
 	shader->Draw(dc, model);
 }
+
+// デバッグプリミティブ描画
+void Player::DrawDebugPrimitive()
+{
+	DebugRenderer* debugRenderer = Graphics::Instance().GetDebugRenderer();
+
+	//衝突判定用のデバック球を描画
+	debugRenderer->DrawSphere(position, radius, DirectX::XMFLOAT4{ 0,0,0,1 });
+	 
+}
+
+
 
 //デバック用GUI描画
 void Player::DrawDebugGUI() {

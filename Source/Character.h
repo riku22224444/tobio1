@@ -28,6 +28,10 @@ public:
 
 //s—ñXVˆ—
 	void UpdateTransform();
+
+	//”¼Œaæ“¾
+	float GetRadius() const { return radius; }
+
 protected:
 	DirectX::XMFLOAT3 position = { 0,0,0 };
 	DirectX::XMFLOAT3 angle = { 0,0,0 };
@@ -38,4 +42,5 @@ protected:
 	0,0,1,0,
 	0,0,0,1 };
 
+	float radius = 0.5f;
 };
