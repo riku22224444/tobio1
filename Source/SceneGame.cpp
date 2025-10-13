@@ -134,6 +134,9 @@ void SceneGame::Render()
 		// プレイヤーデバッグプリミティブ描画
 		player->DrawDebugPrimitive();
 
+		// エネミーデバッグプリミティブ描画
+		EnemyManager::Instance().DrawDebugPrimitive();
+
 		// ラインレンダラ描画実行
 		graphics.GetLineRenderer()->Render(dc, rc.view, rc.projection);
 

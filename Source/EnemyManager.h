@@ -14,6 +14,7 @@ public:
 	//唯一のインスタンスを取得
 	static EnemyManager& Instance() {
 		static EnemyManager instance;
+
 		return instance;
 	}
 	//更新処理
@@ -24,6 +25,9 @@ public:
 
 	//エネミー登録
 	void Register(Enemy* enemy);
+
+		//デバックプリミティブ描画
+	void DrawDebugPrimitive();
 
 	//エネミー全削除
 	void Clear();

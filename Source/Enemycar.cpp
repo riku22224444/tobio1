@@ -1,4 +1,15 @@
 #include"Enemycar.h"
+#include"Enemy.h"
+#include"Graphics/Graphics.h"
+
+
+//デバックプリミティブ描画
+void Enemy::DrawDebugPrimitive() {
+	DebugRenderer* debugRenderer = Graphics::Instance().GetDebugRenderer();
+	
+	//衝突判定用のデバック球を描画
+	debugRenderer->DrawSphere(position, radius, DirectX::XMFLOAT4(0, 0, 0, 1));
+}
 
 //コンストラクタ
 Enemycar::Enemycar() {

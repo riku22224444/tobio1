@@ -20,6 +20,14 @@ void EnemyManager::Register(Enemy* enemy) {
 	enemies.emplace_back(enemy);
 }
 
+//デバックプリミティブ描画
+void EnemyManager::DrawDebugPrimitive() {
+		for (Enemy* enemy : enemies) {
+		enemy->DrawDebugPrimitive();
+		}
+}
+
+
 //エネミー全削除
 void EnemyManager::Clear() {
 	for (Enemy* enemy : enemies) {
