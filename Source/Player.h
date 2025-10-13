@@ -25,9 +25,15 @@ public:
 private :
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec()const;
+
 	//移動処理
 	void Move(float elapsedTime, float vx, float vz, float speed);
+
+	//プレイヤーとエネミーとの衝突処理
+	void CollisionPlayerVsEnemies();
+
 	//移動入力処理
+
 	void InputMove(float elapsedTime);
 	void Turn(float elapsedTime, float vx, float vz, float speed);
 

@@ -3,7 +3,8 @@
 #include<imgui.h>
 #include"Camera.h"
 #include"Graphics/Graphics.h"
-
+#include"EnemyManager.h"
+#include"Collision.h"
 
 
 //コンストラクタ
@@ -28,6 +29,9 @@ void Player::Update(float elapsedTime) {
 
 	//移動入力処理
 	InputMove(elapsedTime);
+
+	//プレイヤーと敵との衝突処理
+	CollisionPlayerVsEnemies();
 
 	//オブジェクト行列を更新
 	UpdateTransform();
@@ -188,4 +192,31 @@ void Player::InputMove(float elapsedTime) {
 	Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
 	//旋回処理
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
+}
+
+
+// プレイヤーとエネミーとの衝突処理
+void Player::CollisionPlayerVsEnemies()
+{
+	EnemyManager& enemyManager = EnemyManager::Instance();
+
+	// 全ての敵と総当たりで衝突処理
+	int enemyCount = enemyManager.GetEnemyCount();
+	for (int i = 0; i < enemyCount; ++i)
+	{
+		Enemy* enemy = enemyManager.GetEnemy(i);
+
+		// 衝突処理
+		DirectX::XMFLOAT3 outPosition;
+		if (Collision::IntersectSphereVsSphere(
+			position,radius,
+			enemy->GetPosition(),
+			enemy->GetRadius(),
+			outPosition))
+		{
+		// 押し出し後の位置設定
+			enemy->SetPosition(outPosition);
+		}
+
+	}
 }

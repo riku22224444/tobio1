@@ -1,10 +1,15 @@
 #include"EnemyManager.h"
+#include"Collision.h"
+
+
 
 //更新処理
 void EnemyManager::Update(float elapsedTime) {
 	for (Enemy * enemy : enemies) {
 		enemy->Update(elapsedTime);
 	}
+	//エネミー同士の衝突判定
+	CollisionEnemiVsEnemies();
 }
 
 
@@ -20,12 +25,6 @@ void EnemyManager::Register(Enemy* enemy) {
 	enemies.emplace_back(enemy);
 }
 
-//デバックプリミティブ描画
-void EnemyManager::DrawDebugPrimitive() {
-		for (Enemy* enemy : enemies) {
-		enemy->DrawDebugPrimitive();
-		}
-}
 
 
 //エネミー全削除
@@ -34,4 +33,37 @@ void EnemyManager::Clear() {
 		delete enemy;
 	}
 	enemies.clear();
+}
+
+//デバックプリミティブ描画
+void EnemyManager::DrawDebugPrimitive() {
+		for (Enemy* enemy : enemies) {
+		enemy->DrawDebugPrimitive();
+		}
+}
+
+
+// エネミー同士の衝突処理
+void EnemyManager::CollisionEnemiVsEnemies()
+{
+	size_t enemyCount = enemies.size();
+	for (int i = 0; i < enemyCount; ++i)
+	{
+		Enemy* enemyA = enemies.at(i);
+		for (int j = i + 1; j < enemyCount; ++j)
+		{
+			Enemy* enemyB = enemies.at(j);
+
+			DirectX::XMFLOAT3 outPosition;
+			if (Collision::IntersectSphereVsSphere(
+				enemyA->GetPosition(),
+				enemyA->GetRadius(),
+				enemyB->GetPosition(),
+				enemyB->GetRadius(),
+				outPosition))
+			{
+				enemyB->SetPosition(outPosition);
+			}
+		}
+	}
 }

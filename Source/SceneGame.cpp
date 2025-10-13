@@ -30,9 +30,11 @@ void SceneGame::Initialize()
 
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
-	Enemycar* car = new Enemycar();
-	car->SetPosition(DirectX::XMFLOAT3(0, 0, 5));
-	enemyManager.Register(car);
+	for (int i = 0; i < 2; i++) {
+		Enemycar* car = new Enemycar();
+		car->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
+		enemyManager.Register(car);
+	}
 }
 
 // 終了化

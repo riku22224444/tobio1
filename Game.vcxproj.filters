@@ -138,7 +138,7 @@
     <ClInclude Include="Source\Enemycar.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Collission.h">
+    <ClInclude Include="Source\Collision.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
@@ -233,7 +233,7 @@
     <ClCompile Include="Source\Enemycar.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Collission.cpp">
+    <ClCompile Include="Source\Collision.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

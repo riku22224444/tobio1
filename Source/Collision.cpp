@@ -1,4 +1,4 @@
-#include"Collission.h"
+#include"Collision.h"
 
 //‹…‚Æ‹…‚Ì“–‚½‚è”»’è
 bool Collision::IntersectSphereVsSphere(

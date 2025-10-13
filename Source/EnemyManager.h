@@ -26,13 +26,22 @@ public:
 	//エネミー登録
 	void Register(Enemy* enemy);
 
+
 		//デバックプリミティブ描画
 	void DrawDebugPrimitive();
+	
+	// エネミー数取得
+	int GetEnemyCount() const { return static_cast<int>(enemies.size()); }
+
+	// エネミー取得
+	Enemy* GetEnemy(int index) { return enemies.at(index); }
 
 	//エネミー全削除
 	void Clear();
-	
+
 private:
+	//エネミー同士の衝突判定
+	void CollisionEnemiVsEnemies();
 
 	std::vector<Enemy*> enemies;
 
