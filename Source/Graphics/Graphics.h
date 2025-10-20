@@ -51,6 +51,8 @@ public:
 	// ImGuiƒŒƒ“ƒ_ƒ‰æ“¾
 	ImGuiRenderer* GetImGuiRenderer() const { return imguiRenderer.get(); }
 
+	RenderState* GetRenderState() { return renderState.get(); }
+
 private:
 	static Graphics*								instance;
 
@@ -68,5 +70,6 @@ private:
 
 	float	screenWidth;
 	float	screenHeight;
-};
 
+	std::unique_ptr<RenderState>					renderState;
+};

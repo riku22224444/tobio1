@@ -1,10 +1,11 @@
 #pragma once
+#include "Scene.h"
 #include"Stage.h"
 #include"Player.h"
 #include"CameraController.h"
 
 // ƒQ[ƒ€ƒV[ƒ“
-class SceneGame
+class SceneGame : public Scene
 {
 public:
 	SceneGame() {}
@@ -21,6 +22,8 @@ public:
 
 	// •`‰æˆ—
 	void Render();
+
+	void DrawGUI() {};
 private:
 	Stage* stage = nullptr;
 	Player* player = nullptr;

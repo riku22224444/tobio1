@@ -28,6 +28,12 @@ public:
 		float angle,
 		float r, float g, float b, float a) const;
 
+	void Sprite::Render(ID3D11DeviceContext* dc,
+		float dx, float dy,
+		float dw, float dh,
+		float angle,
+		float r, float g, float b, float a) const;
+
 	// テクスチャ幅取得
 	int GetTextureWidth() const { return textureWidth; }
 

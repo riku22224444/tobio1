@@ -139,6 +139,9 @@ Graphics::Graphics(HWND hWnd)
 		lineRenderer = std::make_unique<LineRenderer>(device.Get(), 1024);
 		imguiRenderer = std::make_unique<ImGuiRenderer>(hWnd, device.Get());
 	}
+
+	// レンダーステート生成
+	renderState = std::make_unique<RenderState>(device.Get());
 }
 
 // デストラクタ

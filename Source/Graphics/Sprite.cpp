@@ -355,3 +355,11 @@ void Sprite::Render(ID3D11DeviceContext *immediate_context,
 	}
 }
 
+void Sprite::Render(ID3D11DeviceContext* dc,
+	float dx, float dy,
+	float dw, float dh,
+	float angle,
+	float r, float g, float b, float a) const
+{
+	Render(dc, dx, dy, dw, dh, 0, 0, textureWidth, textureHeight, angle, r, g, b, a);
+}
