@@ -12,9 +12,6 @@ class Collision {
 			const DirectX::XMFLOAT3& positionB,
 			float radiusB,
 			DirectX::XMFLOAT3& outPosition
-		
-		
-		
 		);
 
 };
