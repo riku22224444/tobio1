@@ -1,7 +1,17 @@
 #include"Stage.h"
 
+static Stage* instance = nullptr;
+
+//インスタンス取得
+Stage& Stage::Instance() {
+
+	return *instance;
+}
+
 //コンストラクタ
 Stage::Stage() {
+	instance = this;
+
 	//ステージモデルを読み込み
 	model = new Model("Data/Model/ExampleStage/ExampleStage.mdl");
 
@@ -21,4 +31,7 @@ void Stage::Update(float elapsedTime) {
 void Stage::Render(ID3D11DeviceContext* dc, Shader* shader) {
 	//シェーダーにモデルを描画してもらう
 	shader->Draw(dc, model);
+}
+bool Stage::Raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) {
+	return Collision::IntersectRayVsMode(start, end, model,hit);
 }

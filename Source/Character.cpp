@@ -18,3 +18,11 @@ void Character::UpdateTransform() {
 	//計算したワールド行列を取り出す
 	DirectX::XMStoreFloat4x4(&transform, W);
 }
+
+void Character::UpdateHorizontalMove(float elapsedTime) {
+
+	// 移動処理
+	position.x += velocity.x * elapsedTime;
+	position.z += velocity.z * elapsedTime;
+
+}

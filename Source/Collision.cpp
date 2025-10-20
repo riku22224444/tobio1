@@ -7,7 +7,9 @@ bool Collision::IntersectSphereVsSphere(
 	const DirectX::XMFLOAT3& positionB,
 	float radiusB,
 	DirectX::XMFLOAT3& outPosition
-) {
+)
+
+{
 	//A→Bへのベクトルを算出
 	DirectX::XMVECTOR PositionA = DirectX::XMLoadFloat3(&positionA);
 	DirectX::XMVECTOR PositionB = DirectX::XMLoadFloat3(&positionB);
@@ -31,4 +33,15 @@ bool Collision::IntersectSphereVsSphere(
 
 	return true;
 
+}
+
+//レイとモデルの交差判定
+bool Collision::IntersectRayVsMode(
+	const DirectX::XMFLOAT3& start,
+	const DirectX::XMFLOAT3& end,
+	const Model* model,
+	HitResult& result)
+{
+	//未実装
+	return false;
 }

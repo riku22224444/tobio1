@@ -32,6 +32,9 @@ public:
 	//”¼Œaæ“¾
 	float GetRadius() const { return radius; }
 
+	// …•½ˆÚ“®XVˆ—
+	void UpdateHorizontalMove(float elapsedTime);
+
 protected:
 	DirectX::XMFLOAT3 position = { 0,0,0 };
 	DirectX::XMFLOAT3 angle = { 0,0,0 };
@@ -42,5 +45,7 @@ protected:
 	0,0,1,0,
 	0,0,0,1 };
 
-	float radius = 0.5f;
+	float				radius = 0.5f;
+	DirectX::XMFLOAT3	velocity = { 0, 0, 0 };
+	float stepOffset = 1.0f;
 };
