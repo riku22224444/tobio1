@@ -220,3 +220,9 @@ void Player::CollisionPlayerVsEnemies()
 
 	}
 }
+
+// ’…’n‚µ‚½Žž‚ÉŒÄ‚Î‚ê‚é
+void Player::OnLanding()
+{
+	jumpCount = 0;
+}

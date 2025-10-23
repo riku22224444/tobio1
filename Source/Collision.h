@@ -24,7 +24,7 @@ class Collision {
 		);
 
 		//ƒŒƒC‚Æƒ‚ƒfƒ‹‚ÌŒğ·”»’è
-		static	bool Collision::IntersectRayVsMode(
+		static	bool IntersectRayVsMode(
 			const DirectX::XMFLOAT3& start,
 			const DirectX::XMFLOAT3& end,
 			const Model* model,

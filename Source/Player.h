@@ -36,9 +36,13 @@ private :
 
 	void InputMove(float elapsedTime);
 	void Turn(float elapsedTime, float vx, float vz, float speed);
+protected:
 
+	// ’…’n‚µ‚½Žž‚ÉŒÄ‚Î‚ê‚é
+	void OnLanding() override;
 
 private:
+	int					jumpCount = 0;
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
 	float turnSpeed = DirectX::XMConvertToRadians(720);

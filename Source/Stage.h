@@ -14,7 +14,7 @@ public :
 	void Update(float elapsedTime);
 
 	//レイキャスト
-	bool Raycast(const DirectX::XMFLOAT3& start,const DirectX::XMFLOAT3& end,HitResult& result);
+	bool Raycast(const DirectX::XMFLOAT3& start,const DirectX::XMFLOAT3& end,HitResult& hit);
 
 	//インスタンスを取得
 	static Stage& Instance();

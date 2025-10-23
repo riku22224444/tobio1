@@ -32,6 +32,7 @@ void Stage::Render(ID3D11DeviceContext* dc, Shader* shader) {
 	//シェーダーにモデルを描画してもらう
 	shader->Draw(dc, model);
 }
+//レイキャスト
 bool Stage::Raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) {
 	return Collision::IntersectRayVsMode(start, end, model,hit);
 }

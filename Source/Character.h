@@ -29,11 +29,25 @@ public:
 //行列更新処理
 	void UpdateTransform();
 
+	// 地面に接地しているか
+	bool IsGround() const { return isGround; }
+
+	
+
 	//半径取得
 	float GetRadius() const { return radius; }
 
+	//垂直移動更新処理
+	void Character::UpdateVerticalMove(float elapsedTime);
+
 	// 水平移動更新処理
 	void UpdateHorizontalMove(float elapsedTime);
+protected:
+
+	// 着地した時に呼ばれる
+	virtual void OnLanding() {}
+
+
 
 protected:
 	DirectX::XMFLOAT3 position = { 0,0,0 };
@@ -44,6 +58,7 @@ protected:
 	0,1,0,0,
 	0,0,1,0,
 	0,0,0,1 };
+	bool				isGround = false;
 
 	float				radius = 0.5f;
 	DirectX::XMFLOAT3	velocity = { 0, 0, 0 };
