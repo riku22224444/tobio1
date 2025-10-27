@@ -23,6 +23,16 @@ class Collision {
 			DirectX::XMFLOAT3& outPosition
 		);
 
+		//‹…‚Æ‰~’Œ‚ÌŒğ·”»’è
+		static	bool IntersectSphereVsCylinder(
+			const DirectX::XMFLOAT3& spherePosition,
+			float sphereRadius,
+			const DirectX::XMFLOAT3& cylinderPosition,
+			float cylinderRadius,
+			float cylinderHeight,
+			DirectX::XMFLOAT3& outCylinderPosition
+		);
+
 		//ƒŒƒC‚Æƒ‚ƒfƒ‹‚ÌŒğ·”»’è
 		static	bool IntersectRayVsMode(
 			const DirectX::XMFLOAT3& start,
