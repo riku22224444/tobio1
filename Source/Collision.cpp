@@ -67,7 +67,7 @@ bool Collision::IntersectSphereVsCylinder(const DirectX::XMFLOAT3& spherePositio
 }
 
 //レイとモデルの交差判定
-bool Collision::IntersectRayVsMode(
+bool Collision::IntersectRayVsModel (
 	const DirectX::XMFLOAT3& start,
 	const DirectX::XMFLOAT3& end,
 	const Model* model,
@@ -108,7 +108,7 @@ bool Collision::IntersectRayVsMode(
 
 		int materialIndex = -1;
 		DirectX::XMVECTOR HitPosition;
-		DirectX::XMPlaneDotNormal;
+		DirectX::XMVECTOR HitNormal;
 		for (const ModelResource::Subset& subset : mesh.subsets) {
 			for (UINT i = 0; i < subset.indexCount; i += 3) {
 				UINT index = subset.startIndex + i;
@@ -161,7 +161,7 @@ bool Collision::IntersectRayVsMode(
 				float dot2;
 				DirectX::XMStoreFloat(&dot2, Dot2);
 				if (dot2 < 0.0f)continue;
-					
+
 				//3つ目
 				DirectX::XMVECTOR PC = DirectX::XMVectorSubtract(C, P);
 				DirectX::XMVECTOR Cross3 = DirectX::XMVector3Cross(PC, BC);
@@ -171,14 +171,39 @@ bool Collision::IntersectRayVsMode(
 				if (dot3 < 0.0f)continue;
 
 				//最近距離を更新
+				neart = x;
 
-				
+				//交点と法線を更新
+				HitPosition = P;
+				HitNormal = N;
+				materialIndex = subset.materialIndex;
+			}
+		}
 
+		if (materialIndex >= 0)
+		{
 
+			//ローカル空間からワールド空間へ変換
+			DirectX::XMVECTOR WorldPosition = DirectX::XMVector3TransformCoord(HitPosition,
+				WorldTransform);
+			DirectX::XMVECTOR WorldCrossVec = DirectX::XMVectorSubtract(WorldPosition, WorldStart);
+			DirectX::XMVECTOR WorldCrossLength = DirectX::XMVector3Length(WorldCrossVec);
+			float distance;
+			DirectX::XMStoreFloat(&distance, WorldCrossLength);
 
-
+			//ヒット情報保存
+			if(result.distance > distance)
+			{
+				DirectX::XMVECTOR WorldNormal = DirectX::XMVector3TransformNormal(HitNormal,
+					WorldTransform);
+				result.distance = distance;
+				result.materialIndex = materialIndex;
+				DirectX::XMStoreFloat3(&result.position, WorldPosition);
+				DirectX::XMStoreFloat3(&result.normal, DirectX::XMVector3Normalize(WorldNormal));
+				hit = true;
+		
 			}
 		}
 	}
-
+	return hit;
 }

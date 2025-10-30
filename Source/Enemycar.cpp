@@ -8,7 +8,11 @@ void Enemy::DrawDebugPrimitive() {
 	DebugRenderer* debugRenderer = Graphics::Instance().GetDebugRenderer();
 	
 	//衝突判定用のデバック球を描画
-	debugRenderer->DrawSphere(position, radius, DirectX::XMFLOAT4(0, 0, 0, 1));
+	//debugRenderer->DrawSphere(position, radius, DirectX::XMFLOAT4(0, 0, 0, 1));
+
+	//衝突判定用のデバック円柱を描画
+	debugRenderer->DrawCylinder(position, radius, height, DirectX::XMFLOAT4(0, 0, 0, 1));
+
 }
 
 //コンストラクタ
@@ -19,6 +23,11 @@ model = new Model("Data/Model/Slime/Slime.mdl");
 
 	//スケーリング
 	scale.x = scale.y = scale.z = 0.01f;
+
+
+	//幅、高さ設定
+	radius = 0.5f;
+	height = 1.0f;
 }
 
 //デストラクタ
