@@ -354,7 +354,22 @@ void Sprite::Render(ID3D11DeviceContext *immediate_context,
 		immediate_context->Draw(4, 0);
 	}
 }
+void Sprite::textout(ID3D11DeviceContext* immediate_context, std::string s,
+	float x, float y, float w, float h, float r, float g, float b, float a)
+{
+	float sw = static_cast<float>(textureWidth / 16);
+	float sh = static_cast<float>(textureHeight / 16);
+	float carriage = 0;
+	for (const char c : s)
+	{
+		Render(immediate_context, x + carriage, y, w, h,
+			sw * (c & 0x0F), sh * (c >> 4), sw, sh,
+			0, r, g, b, a);
+		carriage += w;
+	}
 
+
+}
 void Sprite::Render(ID3D11DeviceContext* dc,
 	float dx, float dy,
 	float dw, float dh,
