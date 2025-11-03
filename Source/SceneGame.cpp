@@ -15,6 +15,10 @@ void SceneGame::Initialize()
 	//プレイヤー初期化
 	player = new Player();
 
+
+	gameUI = new GameUI();
+
+
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
@@ -37,7 +41,7 @@ void SceneGame::Initialize()
 		enemyManager.Register(car);
 	}
 
-	//SceneManager::Instance().ChangeScene(new GameUI);
+	gameUI->Initialize();
 }
 
 // 終了化
@@ -64,6 +68,7 @@ void SceneGame::Finalize()
 		delete stage;
 		stage = nullptr;
 	}
+	gameUI->Finalize();
 }
 
 // 更新処理
@@ -86,6 +91,7 @@ void SceneGame::Update(float elapsedTime)
 	EnemyManager::Instance().Update(elapsedTime);
 
 	//SceneManager::Instance().Update(elapsedTime);
+	gameUI->Update(elapsedTime);
 }
 
 // 描画処理
@@ -153,7 +159,7 @@ void SceneGame::Render()
 
 	// 2Dスプライト描画
 	{
-		//gameUI->Render();
+		gameUI->Render();
 		//SceneManager::Instance().Render();
 	}
 
