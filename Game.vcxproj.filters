@@ -157,6 +157,9 @@
     <ClInclude Include="Source\Scene.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Item.h" />
+    <ClInclude Include="Source\ItemManager.h" />
+    <ClInclude Include="Source\Bottle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -265,6 +268,12 @@
       <Filter>Source\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameUI.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ItemManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Bottle.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

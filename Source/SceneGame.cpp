@@ -3,6 +3,8 @@
 #include"Camera.h"
 #include "EnemyManager.h"
 #include "Enemycar.h"
+#include "ItemManager.h"
+#include "Bottle.h"
 #include"SceneManager.h"
 #include"GameUI.h"
 
@@ -40,7 +42,13 @@ void SceneGame::Initialize()
 		car->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 		enemyManager.Register(car);
 	}
-
+	//アイテム(ボトル)初期化
+	ItemManager& itemManager = ItemManager::Instance();
+	for (int i = 0; i < 3; i++) {
+		Bottle* rum = new Bottle();
+		rum->SetPosition(DirectX::XMFLOAT3(i * 4.0f, 0, 2));
+		itemManager.Register(rum);
+	}
 	gameUI->Initialize();
 }
 
@@ -50,6 +58,8 @@ void SceneGame::Finalize()
   
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
+	//アイテム終了化
+	ItemManager::Instance().Clear();
 
 	//カメラコントローラー終了化
 	if (cameraController != nullptr) {
@@ -89,7 +99,8 @@ void SceneGame::Update(float elapsedTime)
 
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
-
+	//アイテム更新処理
+	ItemManager::Instance().Update(elapsedTime);
 	//SceneManager::Instance().Update(elapsedTime);
 	gameUI->Update(elapsedTime);
 }
@@ -130,6 +141,9 @@ void SceneGame::Render()
 		//エネミー描画
 		EnemyManager::Instance().Render(dc, shader);
 
+		//アイテム描画
+		ItemManager::Instance().Render(dc, shader);
+
 		//プレイヤー描画
 		player->Render(dc, shader);
 
@@ -149,6 +163,9 @@ void SceneGame::Render()
 
 		// エネミーデバッグプリミティブ描画
 		EnemyManager::Instance().DrawDebugPrimitive();
+
+		// アイテムデバッグプリミティブ描画
+		ItemManager::Instance().DrawDebugPrimitive();
 
 		// ラインレンダラ描画実行
 		graphics.GetLineRenderer()->Render(dc, rc.view, rc.projection);
