@@ -13,11 +13,11 @@ public :
 	//更新処理
 	void Update(float elapsedTime);
 
-	//レイキャスト
-	bool Raycast(const DirectX::XMFLOAT3& start,const DirectX::XMFLOAT3& end,HitResult& hit);
-
 	//インスタンスを取得
 	static Stage& Instance();
+
+	//レイキャスト
+	bool RayCast(const DirectX::XMFLOAT3& start,const DirectX::XMFLOAT3& end,HitResult& hit);
 
 	//描画処理
 	void Render(ID3D11DeviceContext* dc, Shader* shader);

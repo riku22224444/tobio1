@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
-
+#include <string>
 // スプライト
 class Sprite
 {
@@ -34,11 +34,14 @@ public:
 		float angle,
 		float r, float g, float b, float a) const;
 
+	void Sprite::textout(ID3D11DeviceContext* immediate_context, std::string s,
+		float x, float y, float w, float h, float r, float g, float b, float a);
 	// テクスチャ幅取得
 	int GetTextureWidth() const { return textureWidth; }
 
 	// テクスチャ高さ取得
 	int GetTextureHeight() const { return textureHeight; }
+
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>			vertexShader;

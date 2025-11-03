@@ -42,6 +42,19 @@ public:
 
 	// …•½ˆÚ“®XVˆ—
 	void UpdateHorizontalMove(float elapsedTime);
+
+	//‚‚³æ“¾
+	float GrtHeigth()const { return height; }
+
+protected :
+
+	//ˆÚ“®ˆ—
+	void Move(float elapsedTime, float vx, float vz, float speed);
+
+	//ù‰ñˆ—
+	void Turn(float elapsedTime, float vx, float vz, float speed);
+
+
 protected:
 
 	// ’…’n‚µ‚½‚ÉŒÄ‚Î‚ê‚é
@@ -59,8 +72,8 @@ protected:
 	0,0,1,0,
 	0,0,0,1 };
 	bool				isGround = false;
-
-	float				radius = 0.5f;
 	DirectX::XMFLOAT3	velocity = { 0, 0, 0 };
+	float height = 2.0f;
+	float radius = 0.5f;
 	float stepOffset = 1.0f;
 };

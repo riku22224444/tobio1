@@ -20,12 +20,65 @@ void Character::UpdateTransform() {
 	DirectX::XMStoreFloat4x4(&transform, W);
 }
 
+
+//移動処理
+void Character::Move(float elapsedTime, float vx, float vz, float speed) {
+	speed *= elapsedTime;
+	position.x += vx * speed;
+	position.z += vz * speed;
+}
+
+void Character::Turn(float elapsedTime, float vx, float vz, float speed) {
+	speed += elapsedTime;
+
+	//進行ベクトルがゼロベクトルの場合は処理する必要なし
+	float length = sqrtf(vx * vx + vz * vz);
+	if (length < 0.001f)return;
+
+	//進行ベクトルを単位ベクトル化
+	vx /= length;
+	vz /= length;
+
+	//自身の回転値から前方向を求める
+	float frontX = sinf(angle.y);
+	float frontZ = cosf(angle.y);
+
+
+	//回転角を求める為、2つの単位ベクトルの内積を計算する
+	float dot = (frontX * vx) + (frontZ * vz);
+
+	//内積値は-1.0～1.0で表現されており、2つの単位ベクトルの角度が
+	//小さいほどに1.0に近づくという性質を利用して回転速度を調整する
+	float rot = 1.0f - dot;
+	if (rot > speed)rot = speed;
+
+	//左右判定を行うために2つの単位ベクトルの外積を計算する
+	float cross = (frontZ * vx) - (frontX * vz);
+
+	//2Dの外積値が正の場合か負の場合によって左右判定が行える
+	//左右判定を行うことによって左右回転を選択する
+
+	if (cross < 0.0f) {
+
+		//angle.y -= speed;
+		angle.y -= rot;
+	}
+	else {
+
+		//angle.y += speed;
+		angle.y += rot;
+	}
+
+}
+
+
 //垂直移動更新処理
 void Character::UpdateVerticalMove(float elapsedTime)
 {
 	//垂直方向の移動量
 	float my = velocity.y * elapsedTime;
 
+	//落下中
 	if (my < 0.0f) {
 		//レイの開始位置は足元より少し上
 		DirectX::XMFLOAT3 start = { position.x,position.y + stepOffset,position.z };
@@ -34,7 +87,7 @@ void Character::UpdateVerticalMove(float elapsedTime)
 
 		//レイキャストによる地面判定
 		HitResult hit;
-		if (Stage::Instance().Raycast(start, end, hit)) 
+		if (Stage::Instance().RayCast(start, end, hit)) 
 		{
 			//地面に接地している
 			position.y = hit.position.y;

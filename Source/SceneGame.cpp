@@ -3,7 +3,8 @@
 #include"Camera.h"
 #include "EnemyManager.h"
 #include "Enemycar.h"
-
+#include"SceneManager.h"
+#include"GameUI.h"
 
 // 初期化
 void SceneGame::Initialize()
@@ -35,6 +36,8 @@ void SceneGame::Initialize()
 		car->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 		enemyManager.Register(car);
 	}
+
+	//SceneManager::Instance().ChangeScene(new GameUI);
 }
 
 // 終了化
@@ -81,6 +84,8 @@ void SceneGame::Update(float elapsedTime)
 
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
+
+	//SceneManager::Instance().Update(elapsedTime);
 }
 
 // 描画処理
@@ -148,7 +153,8 @@ void SceneGame::Render()
 
 	// 2Dスプライト描画
 	{
-
+		//gameUI->Render();
+		//SceneManager::Instance().Render();
 	}
 
 	// 2DデバッグGUI描画
