@@ -17,5 +17,5 @@ public:
 	//デバックプリミティブ描画
 	virtual void DrawDebugPrimitive();
 
-
+	void Destroy();
 };

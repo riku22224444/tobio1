@@ -1,6 +1,7 @@
 #pragma once
 
 #include<vector>
+#include <set>
 #include"Item.h"
 
 //エネミーマネージャー
@@ -26,6 +27,7 @@ public:
 	//アイテム登録
 	void Register(Item* item);
 
+	void Remove(Item* item);
 
 	//デバックプリミティブ描画
 	void DrawDebugPrimitive();
@@ -44,5 +46,5 @@ private:
 	void CollisionEnemiVsItemes();
 
 	std::vector<Item*> itemes;
-
+	std::set<Item*>	removes;
 };

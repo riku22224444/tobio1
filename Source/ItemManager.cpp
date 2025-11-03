@@ -2,20 +2,26 @@
 #include"Item.h"
 #include"Collision.h"
 
-
-
 //更新処理
 void ItemManager::Update(float elapsedTime) {
 	for (Item* item : itemes) {
 		item->Update(elapsedTime);
 	}
+
+	for (Item* item : removes)
+	{
+		std::vector<Item*>::iterator it = std::find(itemes.begin(), itemes.end(), item);
+		if (it != itemes.end())
+		{
+			itemes.erase(it);
+		}
+		delete item;
+	}
+	removes.clear();
+
 	//アイテム同士の衝突判定
 	CollisionEnemiVsItemes();
-
-
 }
-
-
 
 //描画処理
 void ItemManager::Render(ID3D11DeviceContext* context, Shader* shader) {
@@ -28,8 +34,6 @@ void ItemManager::Render(ID3D11DeviceContext* context, Shader* shader) {
 void ItemManager::Register(Item* item) {
 	itemes.emplace_back(item);
 }
-
-
 
 //アイテム全削除
 void ItemManager::Clear() {
@@ -45,7 +49,6 @@ void ItemManager::DrawDebugPrimitive() {
 		item->DrawDebugPrimitive();
 	}
 }
-
 
 // アイテム同士の衝突処理
 void ItemManager::CollisionEnemiVsItemes()
@@ -70,4 +73,9 @@ void ItemManager::CollisionEnemiVsItemes()
 			}
 		}
 	}
+}
+
+void ItemManager::Remove(Item* item)
+{
+	removes.insert(item);
 }

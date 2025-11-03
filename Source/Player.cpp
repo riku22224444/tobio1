@@ -5,6 +5,10 @@
 #include"Graphics/Graphics.h"
 #include"EnemyManager.h"
 #include"Collision.h"
+#include "ItemManager.h"
+#include "SceneTitle.h"
+#include "SceneLoading.h"
+#include "SceneManager.h"
 
 
 //コンストラクタ
@@ -25,13 +29,13 @@ Player::~Player() {
 //更新処理
 void Player::Update(float elapsedTime) {
 
-
-
 	//移動入力処理
 	InputMove(elapsedTime);
 
 	//プレイヤーと敵との衝突処理
 	CollisionPlayerVsEnemies();
+
+	CollisionPlayerVsBottleDelete();
 
 	//オブジェクト行列を更新
 	UpdateTransform();
@@ -39,6 +43,11 @@ void Player::Update(float elapsedTime) {
 	//モデル行列更新
 	model->UpdateTransform(transform);
 
+	//クリア判定　条件は後ほど変えることを前提
+	if (DeleteCount == 3 && position.x > 12)
+	{
+		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTitle));
+	}
 }
 
 
@@ -82,11 +91,11 @@ void Player::DrawDebugGUI() {
 			angle.z = DirectX::XMConvertToRadians(a.z);
 			//スケール
 			ImGui::InputFloat3("Scale", &scale.x);
+			//消したボトルの数
+			ImGui::InputInt("DeleteCount", &DeleteCount);
 		}
 	}
-
 	ImGui::End();
-
 }
 
 //スティック入力値から移動ベクトルを取得
@@ -220,6 +229,30 @@ void Player::CollisionPlayerVsEnemies()
 			enemy->SetPosition(outPosition);
 		}
 
+	}
+}
+
+void Player::CollisionPlayerVsBottleDelete()
+{
+	ItemManager& itemManager = ItemManager::Instance();
+
+	// 全ての敵と総当たりで衝突処理
+	int enemyCount = itemManager.GetItemCount();
+	for (int i = 0; i < enemyCount; ++i)
+	{
+		Item* item = itemManager.GetItem(i);
+
+		// 衝突処理
+		DirectX::XMFLOAT3 outPosition;
+		if (Collision::IntersectSphereVsSphere(
+			position, radius,
+			item->GetPosition(),
+			item->GetRadius(),
+			outPosition))
+		{// 押し出し後の位置設定
+			item->Destroy();
+			DeleteCount++;
+		}
 	}
 }
 

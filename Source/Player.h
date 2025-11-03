@@ -35,6 +35,9 @@ private :
 	//プレイヤーとエネミーとの衝突処理
 	void CollisionPlayerVsEnemies();
 
+	//プレイヤーとボトルとの消滅処理
+	void CollisionPlayerVsBottleDelete();
+
 	//移動入力処理
 
 	void InputMove(float elapsedTime);
@@ -61,6 +64,8 @@ private:
 	/*float jumpspeed = 20.0f;
 	float gravity = -1.0f;
 	DirectX::XMFLOAT3 velocity = { 0,0,0 };*/
+
+	int DeleteCount = 0;
 };
 
 
