@@ -11,7 +11,7 @@
 Player::Player()
 {
 	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
-
+	//model = new Model("Data/Model/Scooter/scooter.mdl");//koko//キャラクターモデル
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
 

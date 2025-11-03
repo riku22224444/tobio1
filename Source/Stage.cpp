@@ -14,7 +14,7 @@ Stage::Stage() {
 
 	//ステージモデルを読み込み
 	model = new Model("Data/Model/ExampleStage/ExampleStage.mdl");
-
+	//model = new Model("Data/Model/wiz1etap/wizetap6.mdl"); //koko//ステージ変更
 }
 
 Stage::~Stage() {
