@@ -148,7 +148,7 @@ bool Collision::IntersectRayVsModel (
 				//åç∑Ç™éOäpå`ÇÃì‡ë§Ç…Ç†ÇÈÇ©îªíË
 				//àÍÇ¬ñ⁄
 				DirectX::XMVECTOR PA = DirectX::XMVectorSubtract(A, P);
-				DirectX::XMVECTOR Cross1 = DirectX::XMVector3Cross(PA, BC);
+				DirectX::XMVECTOR Cross1 = DirectX::XMVector3Cross(PA, AB);
 				DirectX::XMVECTOR Dot1 = DirectX::XMVector3Dot(Cross1, N);
 				float dot1;
 				DirectX::XMStoreFloat(&dot1, Dot1);
@@ -164,7 +164,7 @@ bool Collision::IntersectRayVsModel (
 
 				//3Ç¬ñ⁄
 				DirectX::XMVECTOR PC = DirectX::XMVectorSubtract(C, P);
-				DirectX::XMVECTOR Cross3 = DirectX::XMVector3Cross(PC, BC);
+				DirectX::XMVECTOR Cross3 = DirectX::XMVector3Cross(PC, CA);
 				DirectX::XMVECTOR Dot3 = DirectX::XMVector3Dot(Cross3, N);
 				float dot3;
 				DirectX::XMStoreFloat(&dot3, Dot3);
