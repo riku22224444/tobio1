@@ -9,7 +9,8 @@
 #include "SceneTitle.h"
 #include "SceneLoading.h"
 #include "SceneManager.h"
-
+#include <Stage.h>
+using namespace DirectX;
 
 //コンストラクタ
 Player::Player()
@@ -47,6 +48,13 @@ void Player::Update(float elapsedTime) {
 	if (DeleteCount == 3 && position.x > 12)
 	{
 		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTitle));
+	}
+	// 足元にレイを飛ばして地面の高さを取得
+	HitResult hit;
+	DirectX::XMFLOAT3 start = { position.x, position.y + 1.0f, position.z };
+	DirectX::XMFLOAT3 end = { position.x, position.y - 100.0f, position.z };
+	if (Stage::Instance().RayCast(start, end, hit)) {
+		position.y = hit.position.y; // 地面に吸着
 	}
 }
 
