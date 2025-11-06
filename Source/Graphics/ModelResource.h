@@ -119,6 +119,7 @@ public:
 	const std::vector<Node>& GetNodes() const { return nodes; }
 	const std::vector<Animation>& GetAnimations() const { return animations; }
 	const std::vector<Material>& GetMaterials() const { return materials; }
+	std::vector<Material>& GetMaterials() { return materials; }
 
 	// ì«Ç›çûÇ›
 	void Load(ID3D11Device* device, const char* filename);

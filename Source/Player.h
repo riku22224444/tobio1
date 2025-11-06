@@ -42,6 +42,9 @@ private :
 
 	void InputMove(float elapsedTime);
 
+	//ダメージ処理
+	void PlayerDamage(float elapsedTime);
+
 	//ジャンプ処理
 	//void Jump(float speed);
 
@@ -66,15 +69,8 @@ private:
 	DirectX::XMFLOAT3 velocity = { 0,0,0 };*/
 
 	int DeleteCount = 0;
+
+	int HP = 0;
+	bool isDamage = false;
+	int invincibleTime = 0;
 };
-
-
-
-
-
-
-
-
-
-
-

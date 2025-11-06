@@ -6,7 +6,7 @@
 #include"EnemyManager.h"
 #include"Collision.h"
 #include "ItemManager.h"
-#include "SceneTitle.h"
+#include "SceneEnd.h"
 #include "SceneLoading.h"
 #include "SceneManager.h"
 #include <Stage.h>
@@ -19,7 +19,7 @@ Player::Player()
 	//model = new Model("Data/Model/Scooter/scooter.mdl");//koko//キャラクターモデル
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
-
+	HP = 3;
 }
 
 //デストラクタ
@@ -44,10 +44,13 @@ void Player::Update(float elapsedTime) {
 	//モデル行列更新
 	model->UpdateTransform(transform);
 
+	//ダメージ判定
+	PlayerDamage(elapsedTime);
+
 	//クリア判定　条件は後ほど変えることを前提
-	if (DeleteCount == 3 && position.x > 12)
+	if (DeleteCount == 3 && position.x > 12 || HP == 0)
 	{
-		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTitle));
+		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneEnd));
 	}
 	// 足元にレイを飛ばして地面の高さを取得
 	HitResult hit;
@@ -57,7 +60,6 @@ void Player::Update(float elapsedTime) {
 		position.y = hit.position.y; // 地面に吸着
 	}
 }
-
 
 //描画処理
 void Player::Render(ID3D11DeviceContext* dc, Shader* shader) {
@@ -101,6 +103,10 @@ void Player::DrawDebugGUI() {
 			ImGui::InputFloat3("Scale", &scale.x);
 			//消したボトルの数
 			ImGui::InputInt("DeleteCount", &DeleteCount);
+			//HP関連
+			ImGui::InputInt("HP", &HP);
+			ImGui::InputInt("invincibleTime", &invincibleTime);
+			ImGui::Checkbox("isDamage", &isDamage);
 		}
 	}
 	ImGui::End();
@@ -202,7 +208,6 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 //
 //}
 
-
 //移動入力処理
 void Player::InputMove(float elapsedTime) {
 	//進行ベクトル取得
@@ -235,8 +240,8 @@ void Player::CollisionPlayerVsEnemies()
 		{
 		// 押し出し後の位置設定
 			enemy->SetPosition(outPosition);
+			isDamage = true;	//被弾した時TRUEにする
 		}
-
 	}
 }
 
@@ -268,4 +273,36 @@ void Player::CollisionPlayerVsBottleDelete()
 void Player::OnLanding()
 {
 	jumpCount = 0;
+}
+
+// ダメージ処理
+void Player::PlayerDamage(float elapsedTime)
+{
+	// ダメージ中は処理しない
+	if (invincibleTime == 0) {
+		if (isDamage) {
+			HP -= 1;
+			invincibleTime = 60;
+			return;
+		}
+	}
+	else
+	{
+		invincibleTime -= 1;
+
+		auto* res = const_cast<ModelResource*>(model->GetResource());
+		for (auto& mat : res->GetMaterials()) {
+			mat.color.w = 0.4f;
+		}
+
+		if (invincibleTime <= 0)
+		{
+			invincibleTime = 0;
+			isDamage = false;
+
+			for (auto& mat : res->GetMaterials()) {
+				mat.color.w = 1.0;
+			}
+		}
+	}
 }

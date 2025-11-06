@@ -160,6 +160,9 @@
     <ClInclude Include="Source\Item.h" />
     <ClInclude Include="Source\ItemManager.h" />
     <ClInclude Include="Source\Bottle.h" />
+    <ClInclude Include="Source\SceneEnd.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -274,6 +277,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Bottle.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Item.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneEnd.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
