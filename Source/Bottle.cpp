@@ -16,10 +16,11 @@ void Item::DrawDebugPrimitive() {
 Bottle::Bottle() {
 	//モデルを読み込み
 
-	model = new Model("Data/Model/Bottle_of_Rum/Bottle2.mdl");//ボトル
+	model = new Model("Data/Model/Bottle_of_Rum/Bottle1.mdl");//ボトル
 
 	//スケーリング
-	scale.x = scale.y = scale.z = 0.0015f;
+	scale.x = scale.y = scale.z = 0.004f;
+	angle.z = 25;
 	//position.x = 70.0f;
 	//position.y = 8.0f;
 }
