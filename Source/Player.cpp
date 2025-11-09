@@ -384,8 +384,8 @@ void Player::drunkenness(float elapsedTime)
 	if (randomTimer >= 2.0f)
 	{
 		randomTimer = 0.0f;
-		drunkennessX = ((rand() % 800) - 400) / 50.0f; // -1～1
-		drunkennessY = ((rand() % 200) - 100) / 50.0f;
+		drunkennessX = ((rand() % 800) - 400) / 100.0f; // -1～1
+		drunkennessY = ((rand() % 200) - 100) / 100.0f;
 
 
 		// --- GameUIからゲージ値を取得 ---
