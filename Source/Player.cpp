@@ -1,4 +1,4 @@
-#include"Player.h"
+ï»¿#include"Player.h"
 #include"Input/Input.h"
 #include<imgui.h>
 #include"Camera.h"
@@ -10,87 +10,102 @@
 #include "SceneLoading.h"
 #include "SceneManager.h"
 #include <Stage.h>
+#include"GameUI.h"
 using namespace DirectX;
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+template <typename T>
+T clamp(T value, T minVal, T maxVal)
+{
+	if (value < minVal) return minVal;
+	if (value > maxVal) return maxVal;
+	return value;
+}
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 Player::Player()
 {
 	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
-	//model = new Model("Data/Model/Scooter/scooter.mdl");//koko//ƒLƒƒƒ‰ƒNƒ^[ƒ‚ƒfƒ‹
-	//ƒ‚ƒfƒ‹‚ª‘å‚«‚¢‚Ì‚ÅƒXƒP[ƒŠƒ“ƒO
+	//model = new Model("Data/Model/Scooter/scooter.mdl");//koko//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãƒ¢ãƒ‡ãƒ«
+	//ãƒ¢ãƒ‡ãƒ«ãŒå¤§ãã„ã®ã§ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°
 	scale.x = scale.y = scale.z = 0.01f;
 	HP = 3;
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 Player::~Player() {
 	delete model;
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void Player::Update(float elapsedTime) {
 
-	//ˆÚ“®“ü—Íˆ—
+	{
+		GamePad& gamePad = Input::Instance().GetGamePad();
+		axisX = gamePad.GetAxisLX();
+		axisY = gamePad.GetAxisLY();
+	}
+
+	drunkenness(elapsedTime);
+	//ç§»å‹•å…¥åŠ›å‡¦ç†
 	InputMove(elapsedTime);
 
-	//ƒvƒŒƒCƒ„[‚Æ“G‚Æ‚ÌÕ“Ëˆ—
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨æ•µã¨ã®è¡çªå‡¦ç†
 	CollisionPlayerVsEnemies();
 
 	CollisionPlayerVsBottleDelete();
 
-	//ƒIƒuƒWƒFƒNƒgs—ñ‚ğXV
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè¡Œåˆ—ã‚’æ›´æ–°
 	UpdateTransform();
 
-	//ƒ‚ƒfƒ‹s—ñXV
+	//ãƒ¢ãƒ‡ãƒ«è¡Œåˆ—æ›´æ–°
 	model->UpdateTransform(transform);
 
-	//ƒ_ƒ[ƒW”»’è
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸åˆ¤å®š
 	PlayerDamage(elapsedTime);
 
-	//ƒNƒŠƒA”»’è@ğŒ‚ÍŒã‚Ù‚Ç•Ï‚¦‚é‚±‚Æ‚ğ‘O’ñ
+	//ã‚¯ãƒªã‚¢åˆ¤å®šã€€æ¡ä»¶ã¯å¾Œã»ã©å¤‰ãˆã‚‹ã“ã¨ã‚’å‰æ
 	if (DeleteCount == 3 && position.x > 12 || HP == 0)
 	{
 		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneEnd));
 	}
-	// ‘«Œ³‚ÉƒŒƒC‚ğ”ò‚Î‚µ‚Ä’n–Ê‚Ì‚‚³‚ğæ“¾
+	// è¶³å…ƒã«ãƒ¬ã‚¤ã‚’é£›ã°ã—ã¦åœ°é¢ã®é«˜ã•ã‚’å–å¾—
 	HitResult hit;
 	DirectX::XMFLOAT3 start = { position.x, position.y + 1.0f, position.z };
 	DirectX::XMFLOAT3 end = { position.x, position.y - 100.0f, position.z };
 	if (Stage::Instance().RayCast(start, end, hit)) {
-		position.y = hit.position.y; // ’n–Ê‚É‹z’…
+		position.y = hit.position.y; // åœ°é¢ã«å¸ç€
 	}
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void Player::Render(ID3D11DeviceContext* dc, Shader* shader) {
 	shader->Draw(dc, model);
 }
 
-// ƒfƒoƒbƒOƒvƒŠƒ~ƒeƒBƒu•`‰æ
+// ãƒ‡ãƒãƒƒã‚°ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–æç”»
 void Player::DrawDebugPrimitive()
 {
 	DebugRenderer* debugRenderer = Graphics::Instance().GetDebugRenderer();
 
-	//Õ“Ë”»’è—p‚ÌƒfƒoƒbƒN‹…‚ğ•`‰æ
+	//è¡çªåˆ¤å®šç”¨ã®ãƒ‡ãƒãƒƒã‚¯çƒã‚’æç”»
 	//debugRenderer->DrawSphere(position, radius, DirectX::XMFLOAT4{ 0,0,0,1 });
 
-	//Õ“Ë”»’è—p‚ÌƒfƒoƒbƒN‰~’Œ‚ğ•`‰æ
+	//è¡çªåˆ¤å®šç”¨ã®ãƒ‡ãƒãƒƒã‚¯å††æŸ±ã‚’æç”»
 	debugRenderer->DrawCylinder(position, radius, height, DirectX::XMFLOAT4(0, 0, 0, 1));
 }
 
 
 
-//ƒfƒoƒbƒN—pGUI•`‰æ
+//ãƒ‡ãƒãƒƒã‚¯ç”¨GUIæç”»
 void Player::DrawDebugGUI() {
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
 	if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None)) {
 
-		//ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+		//ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)){
-			//ˆÊ’u
+			//ä½ç½®
 			ImGui::InputFloat3("Position", &position.x);
-			//‰ñ“]
+			//å›è»¢
 			DirectX::XMFLOAT3 a;
 			a.x = DirectX::XMConvertToDegrees(angle.x);
 			a.y = DirectX::XMConvertToDegrees(angle.y);
@@ -99,11 +114,11 @@ void Player::DrawDebugGUI() {
 			angle.x = DirectX::XMConvertToRadians(a.x);
 			angle.y = DirectX::XMConvertToRadians(a.y);
 			angle.z = DirectX::XMConvertToRadians(a.z);
-			//ƒXƒP[ƒ‹
+			//ã‚¹ã‚±ãƒ¼ãƒ«
 			ImGui::InputFloat3("Scale", &scale.x);
-			//Á‚µ‚½ƒ{ƒgƒ‹‚Ì”
+			//æ¶ˆã—ãŸãƒœãƒˆãƒ«ã®æ•°
 			ImGui::InputInt("DeleteCount", &DeleteCount);
-			//HPŠÖ˜A
+			//HPé–¢é€£
 			ImGui::InputInt("HP", &HP);
 			ImGui::InputInt("invincibleTime", &invincibleTime);
 			ImGui::Checkbox("isDamage", &isDamage);
@@ -112,53 +127,73 @@ void Player::DrawDebugGUI() {
 	ImGui::End();
 }
 
-//ƒXƒeƒBƒbƒN“ü—Í’l‚©‚çˆÚ“®ƒxƒNƒgƒ‹‚ğæ“¾
+//ã‚¹ãƒ†ã‚£ãƒƒã‚¯å…¥åŠ›å€¤ã‹ã‚‰ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—
 DirectX::XMFLOAT3 Player::GetMoveVec() const {
 
-	//“ü—Íî•ñ‚ğæ“¾
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	float ax = gamePad.GetAxisLX();
-	float ay = gamePad.GetAxisLY();
+	////å…¥åŠ›æƒ…å ±ã‚’å–å¾—
+	//GamePad& gamePad = Input::Instance().GetGamePad();
+	//float ax = gamePad.GetAxisLX();
+	//float ay = gamePad.GetAxisLY();
 
-	//ƒJƒƒ‰•ûŒü‚ÆƒXƒeƒBƒbƒN‚Ì“ü—Í’l‚É‚æ‚Á‚Äis•ûŒü‚ğŒvZ‚·‚é
+	////ã‚«ãƒ¡ãƒ©æ–¹å‘ã¨ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›å€¤ã«ã‚ˆã£ã¦é€²è¡Œæ–¹å‘ã‚’è¨ˆç®—ã™ã‚‹
+	//Camera& camera = Camera::Instance();
+	//const DirectX::XMFLOAT3& cameraRight = camera.GetRight();
+	//const DirectX::XMFLOAT3& cameraFront = camera.GetFront();
+	//
+	////ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã¯XZå¹³é¢ã«æ°´å¹³ãªãƒ™ã‚¯ãƒˆãƒ«ã«ãªã‚‹ã‚ˆã†ã«ã™ã‚‹
+	//
+	////ã‚«ãƒ¡ãƒ©å³æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’XZå˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã«å¤‰æ›
+	//float cameraRightX = cameraRight.x;
+	//float cameraRightZ = cameraRight.z;
+	//float cameraRightLength = sqrtf(cameraRightX * cameraRightX + cameraRightZ * cameraRightZ);
+	//
+	//if (cameraRightLength > 0.0f) {
+	//	//å˜ä½ãƒ™ã‚¯ãƒˆãƒ«åŒ–
+	//	cameraRightX /= cameraRightLength;
+	//	cameraRightZ /= cameraRightLength;
+	//}
+	////ã‚«ãƒ¡ãƒ©å‰æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’XZãƒ™ã‚¯ãƒˆãƒ«ã«å¤‰æ›
+	//float cameraFrontX = cameraFront.x;
+	//float cameraFrontZ = cameraFront.z;
+
+	//float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
+	//if (cameraFrontLength > 0.0f) {
+ //    //å˜ä½ãƒ™ã‚¯ãƒˆãƒ«åŒ–
+	//	cameraFrontX /= cameraFrontLength;
+	//	cameraFrontZ /= cameraFrontLength;
+	//}
+	////ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ°´å¹³å…¥åŠ›ã‚’ã‚«ãƒ¡ãƒ©å³æ–¹å‘ã«åæ˜ ã—ã€
+	////ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å‚ç›´å…¥åŠ›å€¤ã‚’ã‚«ãƒ¡ãƒ©å‰æ–¹å‘ã«åæ˜ ã—ã€
+	////é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹
+	//DirectX::XMFLOAT3 vec;
+	//vec.x = (cameraRightX * ax) + (cameraFrontX * ay);
+	//vec.z = (cameraRightZ * ax) + (cameraFrontZ * ay);
+	////Yè»¸æ–¹å‘ã«ã¯ç§»å‹•ã—ãªã„
+	//vec.y = 0.0f;
+	//	return vec;
+	float ax = axisX;  // â† ãƒ¡ãƒ³ãƒãƒ¼ã‚’ä½¿ã†ï¼
+	float ay = axisY;
+
 	Camera& camera = Camera::Instance();
-	const DirectX::XMFLOAT3& cameraRight = camera.GetRight();
-	const DirectX::XMFLOAT3& cameraFront = camera.GetFront();
-	
-	//ˆÚ“®ƒxƒNƒgƒ‹‚ÍXZ•½–Ê‚É…•½‚ÈƒxƒNƒgƒ‹‚É‚È‚é‚æ‚¤‚É‚·‚é
-	
-	//ƒJƒƒ‰‰E•ûŒüƒxƒNƒgƒ‹‚ğXZ’PˆÊƒxƒNƒgƒ‹‚É•ÏŠ·
-	float cameraRightX = cameraRight.x;
-	float cameraRightZ = cameraRight.z;
-	float cameraRightLength = sqrtf(cameraRightX * cameraRightX + cameraRightZ * cameraRightZ);
-	
-	if (cameraRightLength > 0.0f) {
-		//’PˆÊƒxƒNƒgƒ‹‰»
-		cameraRightX /= cameraRightLength;
-		cameraRightZ /= cameraRightLength;
-	}
-	//ƒJƒƒ‰‘O•ûŒüƒxƒNƒgƒ‹‚ğXZƒxƒNƒgƒ‹‚É•ÏŠ·
-	float cameraFrontX = cameraFront.x;
-	float cameraFrontZ = cameraFront.z;
+	const auto& R = camera.GetRight();
+	const auto& F = camera.GetFront();
 
-	float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
-	if (cameraFrontLength > 0.0f) {
-     //’PˆÊƒxƒNƒgƒ‹‰»
-		cameraFrontX /= cameraFrontLength;
-		cameraFrontZ /= cameraFrontLength;
-	}
-	//ƒXƒeƒBƒbƒN‚Ì…•½“ü—Í‚ğƒJƒƒ‰‰E•ûŒü‚É”½‰f‚µA
-	//ƒXƒeƒBƒbƒN‚Ì‚’¼“ü—Í’l‚ğƒJƒƒ‰‘O•ûŒü‚É”½‰f‚µA
-	//isƒxƒNƒgƒ‹‚ğŒvZ‚·‚é
-	DirectX::XMFLOAT3 vec;
-	vec.x = (cameraRightX * ax) + (cameraFrontX * ay);
-	vec.z = (cameraRightZ * ax) + (cameraFrontZ * ay);
-	//Y²•ûŒü‚É‚ÍˆÚ“®‚µ‚È‚¢
-	vec.y = 0.0f;
-		return vec;
+	float rx = R.x, rz = R.z;
+	float rl = sqrtf(rx * rx + rz * rz);
+	if (rl > 0.0f) { rx /= rl; rz /= rl; }
+
+	float fx = F.x, fz = F.z;
+	float fl = sqrtf(fx * fx + fz * fz);
+	if (fl > 0.0f) { fx /= fl; fz /= fl; }
+
+	DirectX::XMFLOAT3 v;
+	v.x = (rx * ax) + (fx * ay);
+	v.z = (rz * ax) + (fz * ay);
+	v.y = 0.0f;
+	return v;
 }
 
-////ˆÚ“®ˆ—
+////ç§»å‹•å‡¦ç†
 //void Player::Move(float elapsedTime, float vx, float vz, float speed) {
 //	speed *= elapsedTime;
 //	position.x += vx * speed;
@@ -168,32 +203,32 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 //void Player::Turn(float elapsedTime, float vx, float vz, float speed) {
 //	speed += elapsedTime;
 //
-//	//isƒxƒNƒgƒ‹‚ªƒ[ƒƒxƒNƒgƒ‹‚Ìê‡‚Íˆ—‚·‚é•K—v‚È‚µ
+//	//é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«ãŒã‚¼ãƒ­ãƒ™ã‚¯ãƒˆãƒ«ã®å ´åˆã¯å‡¦ç†ã™ã‚‹å¿…è¦ãªã—
 //	float length = sqrtf(vx * vx + vz * vz);
 //	if (length < 0.001f)return;
 //
-//	//isƒxƒNƒgƒ‹‚ğ’PˆÊƒxƒNƒgƒ‹‰»
+//	//é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«ã‚’å˜ä½ãƒ™ã‚¯ãƒˆãƒ«åŒ–
 //	vx /= length;
 //	vz /= length;
 //
-//	//©g‚Ì‰ñ“]’l‚©‚ç‘O•ûŒü‚ğ‹‚ß‚é
+//	//è‡ªèº«ã®å›è»¢å€¤ã‹ã‚‰å‰æ–¹å‘ã‚’æ±‚ã‚ã‚‹
 //	float frontX = sinf(angle.y);
 //	float frontZ = cosf(angle.y);
 //
 //
-//	//‰ñ“]Šp‚ğ‹‚ß‚éˆ×A2‚Â‚Ì’PˆÊƒxƒNƒgƒ‹‚Ì“àÏ‚ğŒvZ‚·‚é
+//	//å›è»¢è§’ã‚’æ±‚ã‚ã‚‹ç‚ºã€2ã¤ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©ã‚’è¨ˆç®—ã™ã‚‹
 //	float dot = (frontX * vx) + (frontZ * vz);
 //
-//	//“àÏ’l‚Í-1.0`1.0‚Å•\Œ»‚³‚ê‚Ä‚¨‚èA2‚Â‚Ì’PˆÊƒxƒNƒgƒ‹‚ÌŠp“x‚ª
-//	//¬‚³‚¢‚Ù‚Ç‚É1.0‚É‹ß‚Ã‚­‚Æ‚¢‚¤«¿‚ğ—˜—p‚µ‚Ä‰ñ“]‘¬“x‚ğ’²®‚·‚é
+//	//å†…ç©å€¤ã¯-1.0ï½1.0ã§è¡¨ç¾ã•ã‚Œã¦ãŠã‚Šã€2ã¤ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã®è§’åº¦ãŒ
+//	//å°ã•ã„ã»ã©ã«1.0ã«è¿‘ã¥ãã¨ã„ã†æ€§è³ªã‚’åˆ©ç”¨ã—ã¦å›è»¢é€Ÿåº¦ã‚’èª¿æ•´ã™ã‚‹
 //	float rot = 1.0f - dot;
 //	if (rot > speed)rot = speed;
 //
-//	//¶‰E”»’è‚ğs‚¤‚½‚ß‚É2‚Â‚Ì’PˆÊƒxƒNƒgƒ‹‚ÌŠOÏ‚ğŒvZ‚·‚é
+//	//å·¦å³åˆ¤å®šã‚’è¡Œã†ãŸã‚ã«2ã¤ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã®å¤–ç©ã‚’è¨ˆç®—ã™ã‚‹
 //	float cross = (frontZ * vx) - (frontX * vz);
 //
-//	//2D‚ÌŠOÏ’l‚ª³‚Ìê‡‚©•‰‚Ìê‡‚É‚æ‚Á‚Ä¶‰E”»’è‚ªs‚¦‚é
-//	//¶‰E”»’è‚ğs‚¤‚±‚Æ‚É‚æ‚Á‚Ä¶‰E‰ñ“]‚ğ‘I‘ğ‚·‚é
+//	//2Dã®å¤–ç©å€¤ãŒæ­£ã®å ´åˆã‹è² ã®å ´åˆã«ã‚ˆã£ã¦å·¦å³åˆ¤å®šãŒè¡Œãˆã‚‹
+//	//å·¦å³åˆ¤å®šã‚’è¡Œã†ã“ã¨ã«ã‚ˆã£ã¦å·¦å³å›è»¢ã‚’é¸æŠã™ã‚‹
 //
 //	if (cross < 0.0f) {
 //		
@@ -208,29 +243,29 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 //
 //}
 
-//ˆÚ“®“ü—Íˆ—
+//ç§»å‹•å…¥åŠ›å‡¦ç†
 void Player::InputMove(float elapsedTime) {
-	//isƒxƒNƒgƒ‹æ“¾
+	//é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
-	//ˆÚ“®ˆ—
+	//ç§»å‹•å‡¦ç†
 	Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
-	//ù‰ñˆ—
+	//æ—‹å›å‡¦ç†
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
 }
 
 
-// ƒvƒŒƒCƒ„[‚ÆƒGƒlƒ~[‚Æ‚ÌÕ“Ëˆ—
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã‚¨ãƒãƒŸãƒ¼ã¨ã®è¡çªå‡¦ç†
 void Player::CollisionPlayerVsEnemies()
 {
 	EnemyManager& enemyManager = EnemyManager::Instance();
 
-	// ‘S‚Ä‚Ì“G‚Æ‘“–‚½‚è‚ÅÕ“Ëˆ—
+	// å…¨ã¦ã®æ•µã¨ç·å½“ãŸã‚Šã§è¡çªå‡¦ç†
 	int enemyCount = enemyManager.GetEnemyCount();
 	for (int i = 0; i < enemyCount; ++i)
 	{
 		Enemy* enemy = enemyManager.GetEnemy(i);
 
-		// Õ“Ëˆ—
+		// è¡çªå‡¦ç†
 		DirectX::XMFLOAT3 outPosition;
 		if (Collision::IntersectSphereVsSphere(
 			position,radius,
@@ -238,9 +273,9 @@ void Player::CollisionPlayerVsEnemies()
 			enemy->GetRadius(),
 			outPosition))
 		{
-		// ‰Ÿ‚µo‚µŒã‚ÌˆÊ’uİ’è
+		// æŠ¼ã—å‡ºã—å¾Œã®ä½ç½®è¨­å®š
 			enemy->SetPosition(outPosition);
-			isDamage = true;	//”í’e‚µ‚½TRUE‚É‚·‚é
+			isDamage = true;	//è¢«å¼¾ã—ãŸæ™‚TRUEã«ã™ã‚‹
 		}
 	}
 }
@@ -249,36 +284,36 @@ void Player::CollisionPlayerVsBottleDelete()
 {
 	ItemManager& itemManager = ItemManager::Instance();
 
-	// ‘S‚Ä‚Ì“G‚Æ‘“–‚½‚è‚ÅÕ“Ëˆ—
+	// å…¨ã¦ã®æ•µã¨ç·å½“ãŸã‚Šã§è¡çªå‡¦ç†
 	int enemyCount = itemManager.GetItemCount();
 	for (int i = 0; i < enemyCount; ++i)
 	{
 		Item* item = itemManager.GetItem(i);
 
-		// Õ“Ëˆ—
+		// è¡çªå‡¦ç†
 		DirectX::XMFLOAT3 outPosition;
 		if (Collision::IntersectSphereVsSphere(
 			position, radius,
 			item->GetPosition(),
 			item->GetRadius(),
 			outPosition))
-		{// ‰Ÿ‚µo‚µŒã‚ÌˆÊ’uİ’è
+		{// æŠ¼ã—å‡ºã—å¾Œã®ä½ç½®è¨­å®š
 			item->Destroy();
 			DeleteCount++;
 		}
 	}
 }
 
-// ’…’n‚µ‚½‚ÉŒÄ‚Î‚ê‚é
+// ç€åœ°ã—ãŸæ™‚ã«å‘¼ã°ã‚Œã‚‹
 void Player::OnLanding()
 {
 	jumpCount = 0;
 }
 
-// ƒ_ƒ[ƒWˆ—
+// ãƒ€ãƒ¡ãƒ¼ã‚¸å‡¦ç†
 void Player::PlayerDamage(float elapsedTime)
 {
-	// ƒ_ƒ[ƒW’†‚Íˆ—‚µ‚È‚¢
+	// ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸­ã¯å‡¦ç†ã—ãªã„
 	if (invincibleTime == 0) {
 		if (isDamage) {
 			HP -= 1;
@@ -305,4 +340,73 @@ void Player::PlayerDamage(float elapsedTime)
 			}
 		}
 	}
+}
+void Player::drunkenness(float elapsedTime)
+{
+
+	//// ã‚¿ã‚¤ãƒãƒ¼ã‚’é€²ã‚ã‚‹
+	//randomTimer += elapsedTime;
+
+	//// 3ç§’çµŒéã—ãŸã‚‰
+	//if (randomTimer >= 3.0f)
+	//{
+	//	randomTimer = 0.0f; // ãƒªã‚»ãƒƒãƒˆ
+
+	//	// ãƒ©ãƒ³ãƒ€ãƒ ç”Ÿæˆï¼ˆä¾‹ï¼š0ã€œ99ï¼‰
+	//	randomValue = rand() % 20;
+	//}
+	//
+	//	
+
+	//
+
+	//	if (axisX == 1)
+	//	{
+	//		position.x += randomValue *static_cast<float>(elapsedTime);
+	//	}
+	//	if (axisX == -1)
+	//	{
+	//		position.x -= randomValue * static_cast<float>(elapsedTime);
+	//	}
+	//	if (axisZ == 1)
+	//	{
+	//		position.y += randomValue *static_cast<float>(elapsedTime);
+	//	}
+	//	if (axisZ == -1)
+	//	{
+	//		position.y -= randomValue * static_cast<float>(elapsedTime);
+	//	}
+
+
+
+
+	randomTimer += elapsedTime;
+	if (randomTimer >= 2.0f)
+	{
+		randomTimer = 0.0f;
+		drunkennessX = ((rand() % 800) - 400) / 50.0f; // -1ï½1
+		drunkennessY = ((rand() % 200) - 100) / 50.0f;
+
+
+		// --- GameUIã‹ã‚‰ã‚²ãƒ¼ã‚¸å€¤ã‚’å–å¾— ---
+
+		if (ui) {
+			float gauge = ui->gauge;  // ç¾åœ¨ã®ã‚²ãƒ¼ã‚¸å€¤
+			float gaugeMin = ui->gauge_MIN;
+			float gaugeMax = ui->gauge_MAX;
+
+			// --- ã‚²ãƒ¼ã‚¸æ¯”ç‡ï¼ˆ0ï½1ã«æ­£è¦åŒ–ï¼‰ ---
+			t = (gauge - gaugeMin) / (gaugeMax - gaugeMin);
+			t = clamp(t, 0.0f, 1.0f);
+		}
+	}
+	float drunkenPower = 0.05f + (t * 0.30f);
+	// æ“ä½œå…¥åŠ›ã«æºã‚‰ãã‚’åŠ ãˆã‚‹
+	/*axisX += drunkennessX * 0.2f;
+	axisY += drunkennessY * 0.2f;*/
+	axisX += drunkennessX * drunkenPower;
+	axisY += drunkennessY * drunkenPower;
+	axisX = clamp(axisX, -1.0f, 1.0f);
+	axisY = clamp(axisY, -1.0f, 1.0f);
+
 }

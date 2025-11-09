@@ -3,7 +3,7 @@
 #include"Graphics/Shader.h"
 #include"Graphics/Model.h"
 #include"Character.h"
-
+#include"GameUI.h"
 
 //プレイヤー
 class Player : public Character {
@@ -21,7 +21,7 @@ public:
 	void Update(float elapsedTime);
 	//描画処理
 	void Render(ID3D11DeviceContext* dc, Shader* shader);
-
+	void drunkenness(float elapsedTime);
 private :
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec()const;
@@ -73,4 +73,22 @@ private:
 	int HP = 0;
 	bool isDamage = false;
 	int invincibleTime = 0;
+	DirectX::XMFLOAT2 stickyMove = { 0, 0 }; // XZ の残存ベクトル（-1..1）
+	float stickyAccel = 12.0f;  // 追従の速さ（大きいほど目標に素早く寄る）
+	float stickyDecay = 3.0f;   // 離した後の減衰の速さ（大きいほど早くゼロ）
+	float stickyMaxMag = 1.0f;   // 残存ベクトルの最大長（1で十分）
+	bool  stickyEnabled = true;   // 残存入力のON/OFF
+	float drunkennessX;
+	
+	float axisX = 0.0f;
+	float axisY = 0.0f;
+	float axisZ = 0.0f;
+
+	float randomTimer = 0.0f;
+	int   randomValue = 0;
+
+	float drunkennessY;
+
+	float t = 0.0f; // デフォルト
+	GameUI* ui = nullptr;
 };

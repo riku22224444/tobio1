@@ -10,6 +10,9 @@ public:
     void Render();
     void DrawGUI();
     void Update(float elapsedTime);
+    float gauge = 1;
+    int gauge_MAX = 320 - 50;
+    int gauge_MIN = 620 - 32;
 private:
     //std::unique_ptr<Sprite> sprite; // à¿ëSÇ»RAIIä«óù
     Sprite* sprite = nullptr;
@@ -19,12 +22,11 @@ private:
 
 
     int clearcount = 0;
-    float gauge = 1;
+    
     float gauge_UP;
     float time = 0;
     bool gauge_UP_switch = false;
-    int gauge_MAX = 320 - 50;
-    int gauge_MIN = 620 - 32;
+   
     float cool_time = 3;
 
     bool cool_time_switch = true;

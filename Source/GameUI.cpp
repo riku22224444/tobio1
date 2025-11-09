@@ -45,7 +45,7 @@ void GameUI::Update(float elapsedTime)
     SHORT keyState = GetAsyncKeyState(VK_SPACE);
     bool isPressed = (keyState & 0x8000);
     // 押した瞬間だけ反応
-    if (isPressed && !wasSpacePressed && cool_time_switch == true)
+    if (isPressed && !wasSpacePressed /*&& cool_time_switch == true*/)
     {
         // スペース押した瞬間の処理
 
@@ -70,7 +70,7 @@ void GameUI::Update(float elapsedTime)
             time = 0;
         }
     }
-    if (cool_time_switch == false)
+    /*if (cool_time_switch == false)
     {
         cool_time += static_cast<float>(elapsedTime);
         if (cool_time >= 5)
@@ -78,7 +78,7 @@ void GameUI::Update(float elapsedTime)
             cool_time_switch = true;
             cool_time = 0;
         }
-    }
+    }*/
     if (gauge >= gauge_MIN)
     {
         gauge = gauge_MIN;
