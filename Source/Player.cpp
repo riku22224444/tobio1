@@ -23,8 +23,8 @@ T clamp(T value, T minVal, T maxVal)
 //コンストラクタ
 Player::Player()
 {
-	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
-	//model = new Model("Data/Model/Scooter/scooter.mdl");//koko//キャラクターモデル
+	//model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
+	model = new Model("Data/Model/Scooter/scooter.mdl");//koko//キャラクターモデル
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
 	HP = 3;
@@ -248,9 +248,9 @@ void Player::InputMove(float elapsedTime) {
 	//進行ベクトル取得
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 	//移動処理
-	Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
+	Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed*4);
 	//旋回処理
-	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
+	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed*2);
 }
 
 
@@ -386,7 +386,7 @@ void Player::drunkenness(float elapsedTime)
 	if (randomTimer >= 2.0f)
 	{
 		randomTimer = 0.0f;
-		drunkennessX = ((rand() % 800) - 400) / 100.0f; // -1～1
+		drunkennessX = ((rand() % 200) - 100) / 100.0f; // -1～1
 		drunkennessY = ((rand() % 200) - 100) / 100.0f;
 
 
