@@ -7,6 +7,42 @@
 #include "Bottle.h"
 #include"SceneManager.h"
 #include"GameUI.h"
+#include <vector>
+#include <random> 
+
+using namespace DirectX;
+float GetRandomFloat(float min, float max)
+{
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dist(min, max);
+	return dist(gen);
+}
+
+// 敵のスポーン候補座標リスト//kokoko
+std::vector<DirectX::XMFLOAT3> enemySpawnPoints = {
+	{ 71.0f, 0.0f, -9.0f },   // 家の前（画像①）
+	{ 31.0f, 0.0f, -40.0f },  // 画像②の位置
+	{ -78.0f, -0.861f, -49.77f }, //家の前2 
+	{ -74.0f, -0.877f, 91.987f },  // 曲がり角
+	{ 78.404f, -0.474f, 95.122f }    // 右側奥
+};
+// ボトルのスポーン候補座標リスト//kokoko
+std::vector<DirectX::XMFLOAT3> itemSpawnPoints = {
+	{ 75.0f, 0.0f, -36.0f },   // 家の前（画像①）
+	{ 50.224f, 0.0f, -34.0f },  // 家の前端
+	{ -57.0f, 0.0f, -42.061f }, //車前
+	{ -77.707f, 0.0f, -53.786f },  // enemy前
+	{ 77.544f, 0.0f, -8.0f },    // 道
+	{ 77.517f, 0.0f, -5.0f },   // 道２
+	{ -82.882f, 0.0f, 34.0f },  // 家2
+	{ -76.068f, 0.0f, 79.241f }, //曲がり角
+	{ -71.149f, 0.0f, 105.318f },  // kado前
+	{ 19.450f, 0.0f, 81.465f },  // kusa
+	{ 51.814f, 0.0f, 48.643f }, //交差
+	{ 60.403f, 0.0f, 37.897f },  // 交差２
+	{ 77.439f, 0.0f, 15.110f }    // 右側
+};
 
 // 初期化
 void SceneGame::Initialize()
@@ -37,16 +73,16 @@ void SceneGame::Initialize()
 
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
-	for (int i = 0; i < 2; i++) {
+	/*for (int i = 0; i < 2; i++) {
 		Enemycar* car = new Enemycar();
 		car->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 		enemyManager.Register(car);
-	}
+	}*/
 	//アイテム(ボトル)初期化
 	ItemManager& itemManager = ItemManager::Instance();
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 1; i++) {
 		Bottle* rum = new Bottle();
-		rum->SetPosition(DirectX::XMFLOAT3(i * 4.0f, 0, 2));
+		rum->SetPosition(DirectX::XMFLOAT3(i * 73.5f, 0, 2));
 		itemManager.Register(rum);
 	}
 	gameUI->Initialize();
@@ -100,9 +136,95 @@ void SceneGame::Update(float elapsedTime)
 
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
+	// ====================== =
+	// 敵のスポーン処理
+	// =======================kokoko
+	spawnTimer += elapsedTime;
+
+	if (spawnTimer >= spawnInterval)
+	{
+		spawnTimer = 0.0f; // タイマーリセット
+
+		EnemyManager& enemyManager = EnemyManager::Instance();
+
+		// マップ全体での敵の上限をチェック
+		if (enemyManager.GetEnemyCount() >= MAX_ENEMY)
+			return; // これ以上出現させない
+
+		// ======= ランダムに1つの座標を選ぶ（前回と同じ場所を避ける） =======
+		static int lastIndex = -1;  // ←★関数内static（1回だけ保持される）
+		int index;
+		do {
+			index = (int)GetRandomFloat(0, (float)enemySpawnPoints.size());
+		} while (index == lastIndex && enemySpawnPoints.size() > 1);
+		lastIndex = index;
+
+		// ======= 選ばれたスポーンポイントを取得 =======
+		DirectX::XMFLOAT3 pos = enemySpawnPoints[index];
+
+		// ======= 高さを地形に合わせる =======
+		float y = 0.0f;
+		HitResult hit;
+		DirectX::XMFLOAT3 start = { pos.x, 50.0f, pos.z };
+		DirectX::XMFLOAT3 end = { pos.x, -50.0f, pos.z };
+		if (Stage::Instance().RayCast(start, end, hit))
+		{
+			y = hit.position.y;
+		}
+
+		// ======= 敵生成 =======
+		Enemycar* car = new Enemycar();
+		car->SetPosition({ pos.x, y, pos.z });
+		enemyManager.Register(car);
+	}
+
+
+
 	//アイテム更新処理
 	ItemManager::Instance().Update(elapsedTime);
 	//SceneManager::Instance().Update(elapsedTime);
+	// ====================== =
+	// アイテムのスポーン処理
+	// =======================kokoko
+	spawnTimerBO += elapsedTime;
+
+	if (spawnTimerBO >= spawnIntervalBO)
+	{
+		spawnTimerBO = 0.0f; // タイマーリセット
+
+		ItemManager& itemManager = ItemManager::Instance();
+
+		// マップ全体での敵の上限をチェック
+		if (itemManager.GetItemCount() >= MAX_ITEM)
+			return; // これ以上出現させない
+
+		// ======= ランダムに1つの座標を選ぶ（前回と同じ場所を避ける） =======
+		static int lastIndexBO = -1;  // ←★関数内static（1回だけ保持される）
+		int index;
+		do {
+			index = (int)GetRandomFloat(0, (float)itemSpawnPoints.size());
+		} while (index == lastIndexBO && itemSpawnPoints.size() > 1);
+		lastIndexBO = index;
+
+		// ======= 選ばれたスポーンポイントを取得 =======
+		DirectX::XMFLOAT3 pos = itemSpawnPoints[index];
+
+		// ======= 高さを地形に合わせる =======
+		float y = 0.0f;
+		HitResult hit;
+		DirectX::XMFLOAT3 start = { pos.x, 50.0f, pos.z };
+		DirectX::XMFLOAT3 end = { pos.x, -50.0f, pos.z };
+		if (Stage::Instance().RayCast(start, end, hit))
+		{
+			y = hit.position.y + 0.3f;
+		}
+
+		// ======= アイテム生成 =======
+		Bottle* rum = new Bottle();
+		rum->SetPosition({ pos.x, y, pos.z });
+		itemManager.Register(rum);
+	}
+
 	gameUI->Update(elapsedTime);
 }
 

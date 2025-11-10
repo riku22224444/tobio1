@@ -3,6 +3,7 @@
 #include"Input/Input.h"
 #include "SceneManager.h"
 #include "SceneLoading.h"
+#include "SceneTitle.h"
 #include"Camera.h"
 
 //初期化
@@ -26,7 +27,19 @@ void SceneEnd::Finalize()
 //更新処理
 void SceneEnd::Update(float elapsedTime)
 {
+	GamePad& gamePad = Input::Instance().GetGamePad();
 
+	//なにかボタンを押したらゲームシーンへ切り替え
+	const GamePadButton anyButton =
+		GamePad::BTN_A
+		/* | GamePad::BTN_B
+			| GamePad::BTN_X
+			| GamePad::BTN_Y*/
+		;
+	if (gamePad.GetButtonDown() & anyButton)
+	{
+		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTitle));
+	}
 }
 
 //描画処理

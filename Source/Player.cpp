@@ -11,7 +11,7 @@
 #include "SceneManager.h"
 #include <Stage.h>
 #include"GameUI.h"
-using namespace DirectX;
+
 
 template <typename T>
 T clamp(T value, T minVal, T maxVal)
@@ -27,6 +27,7 @@ Player::Player()
 	model = new Model("Data/Model/Scooter/scooter.mdl");//koko//キャラクターモデル
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
+	position.x = 73.0f;
 	HP = 3;
 }
 
@@ -298,6 +299,7 @@ void Player::CollisionPlayerVsBottleDelete()
 			item->GetRadius(),
 			outPosition))
 		{// 押し出し後の位置設定
+			moveSpeed += 2.0f;
 			item->Destroy();
 			DeleteCount++;
 			ui->gauge_UP_switch = true;
