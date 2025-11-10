@@ -50,6 +50,7 @@ void SceneGame::Initialize()
 		itemManager.Register(rum);
 	}
 	gameUI->Initialize();
+	player->SetUI(gameUI);
 }
 
 // I—¹‰»

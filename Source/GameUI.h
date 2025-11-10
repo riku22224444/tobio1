@@ -13,6 +13,8 @@ public:
     float gauge = 1;
     int gauge_MAX = 320 - 50;
     int gauge_MIN = 620 - 32;
+    bool gauge_UP_switch = false;
+    bool cool_time_switch = true;
 private:
     //std::unique_ptr<Sprite> sprite; // 安全なRAII管理
     Sprite* sprite = nullptr;
@@ -25,11 +27,11 @@ private:
     
     float gauge_UP;
     float time = 0;
-    bool gauge_UP_switch = false;
+   
    
     float cool_time = 3;
 
-    bool cool_time_switch = true;
+   
     bool wasSpacePressed = false; // クラスメンバーに
 
 

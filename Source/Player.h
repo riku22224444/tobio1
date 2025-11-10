@@ -22,6 +22,8 @@ public:
 	//描画処理
 	void Render(ID3D11DeviceContext* dc, Shader* shader);
 	void drunkenness(float elapsedTime);
+	
+	void SetUI(GameUI* p) { ui = p; };
 private :
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec()const;

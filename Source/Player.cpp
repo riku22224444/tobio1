@@ -300,6 +300,8 @@ void Player::CollisionPlayerVsBottleDelete()
 		{// 押し出し後の位置設定
 			item->Destroy();
 			DeleteCount++;
+			ui->gauge_UP_switch = true;
+			ui->cool_time_switch = false;
 		}
 	}
 }
