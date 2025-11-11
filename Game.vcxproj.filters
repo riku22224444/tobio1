@@ -163,6 +163,9 @@
     <ClInclude Include="Source\SceneEnd.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\ModelManager.h">
+      <Filter>Source\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -284,6 +287,9 @@
     </ClCompile>
     <ClCompile Include="Source\SceneEnd.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\ModelManager.cpp">
+      <Filter>Source\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

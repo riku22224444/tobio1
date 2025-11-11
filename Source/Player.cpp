@@ -64,7 +64,8 @@ void Player::Update(float elapsedTime) {
 	PlayerDamage(elapsedTime);
 
 	//クリア判定　条件は後ほど変えることを前提
-	if (DeleteCount == 3 && position.x > 12 || HP == 0)
+	//if (DeleteCount == 3 && position.x > 12 || HP == 0)
+	if (HP == 0)//kokoko//enemyにぶつかってHP減った時だけに変更
 	{
 		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneEnd));
 	}
@@ -285,7 +286,7 @@ void Player::CollisionPlayerVsBottleDelete()
 {
 	ItemManager& itemManager = ItemManager::Instance();
 
-	// 全ての敵と総当たりで衝突処理
+	// 全てのアイテムと総当たりで衝突処理
 	int enemyCount = itemManager.GetItemCount();
 	for (int i = 0; i < enemyCount; ++i)
 	{
@@ -299,7 +300,7 @@ void Player::CollisionPlayerVsBottleDelete()
 			item->GetRadius(),
 			outPosition))
 		{// 押し出し後の位置設定
-			moveSpeed += 2.0f;
+			moveSpeed += 3.0f;
 			item->Destroy();
 			DeleteCount++;
 			ui->gauge_UP_switch = true;

@@ -1,13 +1,14 @@
 #include "Graphics/Graphics.h"
 #include "Graphics/Model.h"
+#include "ModelManager.h"
 
 // コンストラクタ
 Model::Model(const char* filename)
 {
 	// リソース読み込み
-	resource = std::make_shared<ModelResource>();
-	resource->Load(Graphics::Instance().GetDevice(), filename);
-
+	/*resource = std::make_shared<ModelResource>();
+	resource->Load(Graphics::Instance().GetDevice(), filename);*/
+	resource = ModelManager::Instance().LoadModelResource(filename);//kokoko
 	// ノード
 	const std::vector<ModelResource::Node>& resNodes = resource->GetNodes();
 
