@@ -25,8 +25,11 @@ Player::Player()
 {
 	//model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
 	model = new Model("Data/Model/Scooter/scooter.mdl");//koko//キャラクターモデル
+	//model = new Model("Data/Model/Ptcar/Ptcar2.mdl");//koko//パトカー
+	//model = new Model("Data/Model/DustBox/Dust1.mdl");//koko//ゴミ箱
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
+
 	position.x = 73.0f;
 	HP = 3;
 }
@@ -300,7 +303,7 @@ void Player::CollisionPlayerVsBottleDelete()
 			item->GetRadius(),
 			outPosition))
 		{// 押し出し後の位置設定
-			moveSpeed += 3.0f;
+			moveSpeed += 1.3f;
 			item->Destroy();
 			DeleteCount++;
 			ui->gauge_UP_switch = true;
