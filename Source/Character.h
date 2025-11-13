@@ -37,8 +37,11 @@ public:
 	//半径取得
 	float GetRadius() const { return radius; }
 
-	//垂直移動更新処理
-	void Character::UpdateVerticalMove(float elapsedTime);
+	//09
+	//速力処理更新
+	void UpdateVelocity(float elapsedTime);
+
+	
 
 	// 水平移動更新処理
 	void UpdateHorizontalMove(float elapsedTime);
@@ -46,16 +49,22 @@ public:
 	//高さ取得
 	float GrtHeigth()const { return height; }
 
-protected :
+private:
 
+	//垂直速力更新処理
+	void UpdateVerticalVelocity(float elapsedFrame);
+
+
+	//垂直移動更新処理
+	void Character::UpdateVerticalMove(float elapsedTime);
+
+
+protected:
 	//移動処理
 	void Move(float elapsedTime, float vx, float vz, float speed);
 
 	//旋回処理
 	void Turn(float elapsedTime, float vx, float vz, float speed);
-
-
-protected:
 
 	// 着地した時に呼ばれる
 	virtual void OnLanding() {}
@@ -72,6 +81,7 @@ protected:
 	0,0,1,0,
 	0,0,0,1 };
 	bool				isGround = false;
+	float gravity = -1.0f;
 	DirectX::XMFLOAT3	velocity = { 0, 0, 0 };
 	float height = 2.0f;
 	float radius = 0.5f;

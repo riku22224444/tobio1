@@ -62,7 +62,9 @@ protected:
 	void OnLanding() override;
 
 private:
-	int					jumpCount = 0;
+	int jumpCount = 0;
+	int jumpLimit = 2;
+
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
 	float turnSpeed = DirectX::XMConvertToRadians(720);
