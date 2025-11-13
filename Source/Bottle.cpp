@@ -2,8 +2,8 @@
 #include"Item.h"
 #include"Graphics/Graphics.h"
 #include "Bottle.h"
-
-
+#include <cmath> // sin関数用
+using namespace DirectX;
 //デバックプリミティブ描画
 void Item::DrawDebugPrimitive() {
 	DebugRenderer* debugRenderer = Graphics::Instance().GetDebugRenderer();
@@ -33,11 +33,39 @@ Bottle::~Bottle() {
 
 //更新処理
 void Bottle::Update(float elapsedTime) {
-	//オブジェクト行列を更新
-	UpdateTransform();
-	//モデル行列更新
+	
+	// 経過時間を蓄積
+	static float totalTime = 0.0f;
+	totalTime += elapsedTime;
+
+	// === 見た目だけ上下に揺らす ===
+	float floatHeight = 0.3f;   // 揺れの振幅（上下の高さ）
+	float floatSpeed = 1.5f;    // 揺れる速さ
+	float offsetY = sinf(totalTime * floatSpeed) * floatHeight;
+
+	// 実際の当たり判定用の位置は動かさない
+	XMFLOAT3 visualPos = position;
+	visualPos.y += offsetY; // モデルだけ上下させる
+
+	// 行列更新（見た目用位置を使用）
+	XMMATRIX translation = XMMatrixTranslation(visualPos.x, visualPos.y, visualPos.z);
+	XMMATRIX rotationZ = XMMatrixRotationZ(XMConvertToRadians(angle.z));
+	XMMATRIX scaling = XMMatrixScaling(scale.x, scale.y, scale.z);
+
+	DirectX::XMMATRIX world = scaling * rotationZ * translation;
+	
+	DirectX::XMStoreFloat4x4(&transform, world);
+
+	angle.y += rotationSpeed * elapsedTime;
+	// モデル行列を更新
 	model->UpdateTransform(transform);
+
+	////オブジェクト行列を更新
+	//UpdateTransform();
+	////モデル行列更新
+	//model->UpdateTransform(transform);
 }
+
 //描画処理
 void Bottle::Render(ID3D11DeviceContext* dc, Shader* shader) {
 	shader->Draw(dc, model);
