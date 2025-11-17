@@ -22,10 +22,13 @@ void Character::UpdateTransform() {
 
 
 //移動処理
-void Character::Move(float elapsedTime, float vx, float vz, float speed) {
-	speed *= elapsedTime;
-	position.x += vx * speed;
-	position.z += vz * speed;
+void Character::Move( float vx, float vz, float speed) {
+	////移動方向ベクトルを設定
+	moveVecX = vx;
+	moveVecZ = vz;
+
+	//最大速度設定
+	maxMoveSpeed = speed;
 }
 
 void Character::Turn(float elapsedTime, float vx, float vz, float speed) {
@@ -79,9 +82,15 @@ void Character::UpdateVelocity(float elapsedTime)
 
 	//垂直速力更新処理
 	UpdateVerticalVelocity(elapsedFrame);
+	
+	//水平速力更新処理
+	UpdateHorizontalVelocity(elapsedFrame);
 
 	//垂直移動更新処理
 	UpdateVerticalMove(elapsedTime);
+
+	//水平移動更新処理
+	UpdateHorizontalMove(elapsedTime);
 
 	//地面判定
 	if (position.y < 0.0f)
@@ -154,13 +163,69 @@ void Character::UpdateVerticalMove(float elapsedTime)
 	}
 }
 
+//水平速力更新処理
+void Character::UpdateHorizontalVelocity(float elapsedFrame)
+{
+
+	//XZ平面の速力を減速する
+	float length = sqrtf(moveVecX * moveVecX + moveVecZ * moveVecZ);
+	if (length > 0.0f)
+	{
+		//摩擦力
+		float friction = this->friction * elapsedFrame;
+
+		//摩擦による横方向の減速処理
+		if (length > friction)
+		{
+			//単位ベクトル化
+			float vx = velocity.x / length;
+			float vz = velocity.z / length;
+
+			velocity.x -= vx * friction;
+			velocity.z -= vz * friction;
+		}
+		//横方向の速力が摩擦力以下になったので速力を無効か
+		else {
+			velocity.x = 0.0f;
+			velocity.z = 0.0f;
+		}
+	}
+
+	//XZ平面の速力を加速する
+	if (length <= maxMoveSpeed)
+	{
+
+		//移動ベクトルがゼロベクトルでないなら加速する
+		float moveVecLength = sqrtf(moveVecX * moveVecX + moveVecZ * moveVecZ);
+		if (moveVecLength > 0.0f)
+		{
+			//加速力
+			float acceleration = this->acceleration * elapsedFrame;
+			//移動ベクトルによる加速処理
+			velocity.x += moveVecX * acceleration;
+			velocity.z += moveVecZ * acceleration;
+
+			//最大速度制限
+			float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+			if (length > maxMoveSpeed)
+			{
+				float vx = velocity.x / length;
+				float vz = velocity.z / length;
+
+				velocity.x = vx * maxMoveSpeed;
+				velocity.z = vz * maxMoveSpeed;
+			}
+		}
+	}
+	//移動ベクトルをリセット
+	moveVecX = 0.0f;
+	moveVecZ = 0.0f;
+}
 
 
+//水平移動更新処理
 void Character::UpdateHorizontalMove(float elapsedTime) {
 
-	// 移動処理
-	/*position.x += velocity.x * elapsedTime;
-	position.z += velocity.z * elapsedTime;*/
 
 	float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
 	if (velocityLengthXZ > 0.0f)
@@ -218,6 +283,4 @@ void Character::UpdateHorizontalMove(float elapsedTime) {
 			position.z += mz;
 		}
 	}
-
-
 }
