@@ -6,7 +6,7 @@
 
 void GameUI::Initialize()
 {
-    gauge = gauge_MAX;
+    gauge = gauge_MIN;
     // スプライトの生成
     sprite = new Sprite("Data/Sprite/cage.png");
     sprite2 = new Sprite("Data/Sprite/yazirusi.png");

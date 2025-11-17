@@ -20,6 +20,11 @@ T clamp(T value, T minVal, T maxVal)
 	if (value > maxVal) return maxVal;
 	return value;
 }
+template <typename T>
+T lerp(T a, T b, T t)
+{
+	return a + (b - a) * t;
+}
 //コンストラクタ
 Player::Player()
 {
@@ -250,12 +255,62 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 
 //移動入力処理
 void Player::InputMove(float elapsedTime) {
-	//進行ベクトル取得
-	DirectX::XMFLOAT3 moveVec = GetMoveVec();
-	//移動処理
-	Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed*4);
-	//旋回処理
-	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed*2);
+	using namespace DirectX;
+
+	XMFLOAT3 moveVec = GetMoveVec();
+
+	// 入力があるときだけ加速
+	float accel = (fabs(moveVec.x) > 0.1f || fabs(moveVec.z) > 0.1f) ? 1.0f : 0.0f;
+
+	// ★ 基本パラメータ（今までの値）
+	const float baseMaxSpeed = moveSpeed * 4.0f; // もともとの最高速
+	const float baseAccelRate = 4.0f;             // もともとの加速力
+
+	// ★ ゲージ(t)でブースト（t=0 → 通常、t=1 → ブースト状態）
+	//   値は好みで調整してOK
+	float accelScale = lerp(1.0f, 4.0f, t);  // t=1で加速2倍
+	float speedScale = lerp(1.0f, 3.0f, t);  // t=1で最高速1.5倍
+
+	float maxSpeedNow = baseMaxSpeed * speedScale;   // 今フレームの最高速度
+	float accelRateNow = baseAccelRate * accelScale;   // 今フレームの加速力
+
+	// ★ 目標速度（酔いパワーも足してさらに暴走気味にしてOK）
+	float targetSpeed = (maxSpeedNow + drunkenPower) * accel;
+
+	// ★ 加速
+	speed += (targetSpeed - speed) * accelRateNow * elapsedTime;
+
+	// ★ 最高速を超えないようにクランプ
+	speed = clamp(speed, 0.0f, maxSpeedNow);
+
+
+	// ===== ここから下は今までのハンドル・旋回処理そのままでOK =====
+
+	float desiredYaw = atan2f(moveVec.x, moveVec.z);
+
+	float steerScale = 1.0f - 0.85f * t;
+	float rateScale = 1.0f - 0.5f * t;
+
+	float steerInput = clamp(axisX, -1.0f, 1.0f);
+	float targetSteer = (maxSteer * steerScale) * steerInput;
+
+	float maxDelta = steerRate * rateScale * elapsedTime;
+	float delta = targetSteer - steerAngle;
+	delta = clamp(delta, -maxDelta, maxDelta);
+	steerAngle += delta;
+
+	float yawRate = (speed / wheelBase) * steerAngle;
+	float maxYaw = maxYawRate * (1.0f - 0.4f * t);
+	yawRate = clamp(yawRate, -maxYaw, maxYaw);
+
+	yaw += yawRate * elapsedTime;
+	angle.y = yaw;
+
+	XMFLOAT3 fwd = { sinf(yaw), 0, cosf(yaw) };
+	position.x += fwd.x * speed * elapsedTime;
+	position.z += fwd.z * speed * elapsedTime;
+
+	float gripNow = lerp(grip, 3.0f, t);
 }
 
 

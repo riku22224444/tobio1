@@ -53,6 +53,9 @@ void SceneGame::Initialize()
 	//ステージ初期化
 	stage = new Stage();
 	
+	//プレイヤー初期化
+	player = new Player();
+
 	gameUI = new GameUI();
 
 	//カメラ初期設定
@@ -90,7 +93,7 @@ void SceneGame::Initialize()
 		Bottle* rum = new Bottle();
 		rum->SetPosition(DirectX::XMFLOAT3(i * 73.5f, 0, 2));
 		itemManager.Register(rum);
-	}
+	}s
 	//物
 	CreatureManager& creatureManager = CreatureManager::Instance();
 	for (int i = 0; i < 1; i++) {
@@ -98,8 +101,11 @@ void SceneGame::Initialize()
 		dust->SetPosition(DirectX::XMFLOAT3(i * 0.0f, 0, 2));
 		creatureManager.Register(dust);
 	}
+	player = &Player::Instance();
+	// UI を作って初期化
+	gameUI = new GameUI();
 	gameUI->Initialize();
-	Player::Instance().SetUI(gameUI);
+	player->SetUI(gameUI);
 }
 
 // 終了化

@@ -102,4 +102,15 @@ private:
 
 	float t = 0.0f; // デフォルト
 	GameUI* ui = nullptr;
+	// ==== 車のような旋回用パラメータ ====
+	float yaw = 0.0f;              // 現在の向き角（ラジアン）
+	float steerAngle = 0.0f;       // ハンドル角
+	float speed = 0.0f;            // 現在の前進速度
+	float wheelBase = 2.5f;        // 車体長
+	float maxSteer = DirectX::XMConvertToRadians(60.0f);   // 最大ハンドル角
+	float steerRate = DirectX::XMConvertToRadians(720.0f);  // 1秒で回せるハンドル速度
+	float maxYawRate = DirectX::XMConvertToRadians(540.0f);  // 最大旋回速度
+	float grip = 8.0f;             // 横滑りを戻す力
+	float drunkenPower = 0.0f;
+	float accelTime = 4.0f;   // 加速の追従スピード係数（好きな値で調整）
 };
