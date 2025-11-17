@@ -153,20 +153,38 @@
     <ClInclude Include="Source\Graphics\RenderState.h">
       <Filter>Source\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameUI.h" />
     <ClInclude Include="Source\Scene.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Item.h" />
-    <ClInclude Include="Source\ItemManager.h" />
-    <ClInclude Include="Source\Bottle.h" />
     <ClInclude Include="Source\SceneEnd.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\ModelManager.h">
       <Filter>Source\Graphics</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Source\EnemyPolice.h">
+=======
+    <ClInclude Include="Source\Bottle.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameUI.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Item.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ItemManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Creature.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CreatureManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dustbox.h">
+>>>>>>> kokoko
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
@@ -294,7 +312,14 @@
     <ClCompile Include="Source\Graphics\ModelManager.cpp">
       <Filter>Source\Graphics</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Source\EnemyPolice.cpp">
+=======
+    <ClCompile Include="Source\CreatureManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dustbox.cpp">
+>>>>>>> kokoko
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
