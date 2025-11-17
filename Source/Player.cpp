@@ -205,58 +205,14 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 	return v;
 }
 
-////移動処理
-//void Player::Move(float elapsedTime, float vx, float vz, float speed) {
-//	speed *= elapsedTime;
-//	position.x += vx * speed;
-//	position.z += vz * speed;
-//}
-//
-//void Player::Turn(float elapsedTime, float vx, float vz, float speed) {
-//	speed += elapsedTime;
-//
-//	//進行ベクトルがゼロベクトルの場合は処理する必要なし
-//	float length = sqrtf(vx * vx + vz * vz);
-//	if (length < 0.001f)return;
-//
-//	//進行ベクトルを単位ベクトル化
-//	vx /= length;
-//	vz /= length;
-//
-//	//自身の回転値から前方向を求める
-//	float frontX = sinf(angle.y);
-//	float frontZ = cosf(angle.y);
-//
-//
-//	//回転角を求める為、2つの単位ベクトルの内積を計算する
-//	float dot = (frontX * vx) + (frontZ * vz);
-//
-//	//内積値は-1.0～1.0で表現されており、2つの単位ベクトルの角度が
-//	//小さいほどに1.0に近づくという性質を利用して回転速度を調整する
-//	float rot = 1.0f - dot;
-//	if (rot > speed)rot = speed;
-//
-//	//左右判定を行うために2つの単位ベクトルの外積を計算する
-//	float cross = (frontZ * vx) - (frontX * vz);
-//
-//	//2Dの外積値が正の場合か負の場合によって左右判定が行える
-//	//左右判定を行うことによって左右回転を選択する
-//
-//	if (cross < 0.0f) {
-//		
-//		//angle.y -= speed;
-//		angle.y -= rot;
-//	}
-//	else {
-//		
-//		//angle.y += speed;
-//		angle.y += rot;
-//	}
-//
-//}
-
 //移動入力処理
 void Player::InputMove(float elapsedTime) {
+	////進行ベクトル取得
+	//DirectX::XMFLOAT3 moveVec = GetMoveVec();
+	////移動処理
+	//Move(moveVec.x, moveVec.z, moveSpeed);
+	////旋回処理
+	//Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
 
 	using namespace DirectX;
 
@@ -314,6 +270,8 @@ void Player::InputMove(float elapsedTime) {
 	position.z += fwd.z * speed * elapsedTime;
 
 	float gripNow = lerp(grip, 3.0f, t);
+
+
 
 }
 
