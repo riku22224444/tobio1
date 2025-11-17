@@ -30,7 +30,7 @@ Player::Player()
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
 
-	position.x = 73.0f;
+	position.x = 0.0f;
 	HP = 3;
 }
 
@@ -51,6 +51,8 @@ void Player::Update(float elapsedTime) {
 	drunkenness(elapsedTime);
 	//移動入力処理
 	InputMove(elapsedTime);
+
+	UpdateVelocity(elapsedTime);
 
 	//プレイヤーと敵との衝突処理
 	CollisionPlayerVsEnemies();
@@ -253,7 +255,7 @@ void Player::InputMove(float elapsedTime) {
 	//進行ベクトル取得
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 	//移動処理
-	Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed*4);
+	Move(moveVec.x, moveVec.z, moveSpeed*4);
 	//旋回処理
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed*2);
 }

@@ -43,8 +43,6 @@ public:
 
 	
 
-	// 水平移動更新処理
-	void UpdateHorizontalMove(float elapsedTime);
 
 	//高さ取得
 	float GrtHeigth()const { return height; }
@@ -61,7 +59,7 @@ private:
 
 protected:
 	//移動処理
-	void Move(float elapsedTime, float vx, float vz, float speed);
+	void Move( float vx, float vz, float speed);
 
 	//旋回処理
 	void Turn(float elapsedTime, float vx, float vz, float speed);
@@ -69,7 +67,11 @@ protected:
 	// 着地した時に呼ばれる
 	virtual void OnLanding() {}
 
+	//水平速力更新処理
+	void UpdateHorizontalVelocity(float elapsedFrame);
 
+	// 水平移動更新処理
+	void UpdateHorizontalMove(float elapsedTime);
 
 protected:
 	DirectX::XMFLOAT3 position = { 0,0,0 };
@@ -86,4 +88,10 @@ protected:
 	float height = 2.0f;
 	float radius = 0.5f;
 	float stepOffset = 1.0f;
+	float friction = 0.5f;
+	float acceleration = 1.0f;
+	float maxMoveSpeed = 5.0f;
+	float moveVecX = 0.0f;
+	float moveVecZ = 0.0f;
+	float airControl = 0.3f;
 };
