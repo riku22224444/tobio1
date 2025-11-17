@@ -3,6 +3,7 @@
 #include"Camera.h"
 #include "EnemyManager.h"
 #include "Enemycar.h"
+#include "EnemyPolice.h"
 #include "ItemManager.h"
 #include "Bottle.h"
 #include"SceneManager.h"
@@ -50,12 +51,7 @@ void SceneGame::Initialize()
 	//ステージ初期化
 	stage = new Stage();
 	
-	//プレイヤー初期化
-	player = new Player();
-
-
 	gameUI = new GameUI();
-
 
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
@@ -78,6 +74,14 @@ void SceneGame::Initialize()
 		car->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 		enemyManager.Register(car);
 	}*/
+
+	//追尾エネミー
+	for (int i = 0; i < 2; i++) {
+		EnemyPolice* Police = new EnemyPolice();
+		Police->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 10));
+		enemyManager.Register(Police);
+	}
+
 	//アイテム(ボトル)初期化
 	ItemManager& itemManager = ItemManager::Instance();
 	for (int i = 0; i < 1; i++) {
@@ -86,7 +90,7 @@ void SceneGame::Initialize()
 		itemManager.Register(rum);
 	}
 	gameUI->Initialize();
-	player->SetUI(gameUI);
+	Player::Instance().SetUI(gameUI);
 }
 
 // 終了化
@@ -104,12 +108,6 @@ void SceneGame::Finalize()
 		cameraController = nullptr;
 	}
 
-	//プレイヤー終了化
-	if (player != nullptr) {
-		delete player;
-		player = nullptr;
-	}
-	
 	//ステージ終了化
 	if (stage != nullptr) {
 		delete stage;
@@ -122,7 +120,7 @@ void SceneGame::Finalize()
 void SceneGame::Update(float elapsedTime)
 {
 	//カメラコントローラー更新処理
-	DirectX::XMFLOAT3 target = player->GetPosition();
+	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	target.y += 0.5f;
 	cameraController->SetTarget(target);
 	cameraController->Update(elapsedTime);
@@ -132,7 +130,7 @@ void SceneGame::Update(float elapsedTime)
 	stage->Update(elapsedTime);
 
 	//プレイヤー更新処理
-	player->Update(elapsedTime);
+	Player::Instance().Update(elapsedTime);
 
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
@@ -268,21 +266,18 @@ void SceneGame::Render()
 		ItemManager::Instance().Render(dc, shader);
 
 		//プレイヤー描画
-		player->Render(dc, shader);
+		Player::Instance().Render(dc, shader);
 
 		//シェーダー終了
 		shader->End(dc);
 
 	}
 
-
-
-
 	// 3Dデバッグ描画
 	{
 
 		// プレイヤーデバッグプリミティブ描画
-		player->DrawDebugPrimitive();
+		Player::Instance().DrawDebugPrimitive();
 
 		// エネミーデバッグプリミティブ描画
 		EnemyManager::Instance().DrawDebugPrimitive();
@@ -307,7 +302,7 @@ void SceneGame::Render()
 	{
 
 	//プレイヤーデバッグ描画
-		player->DrawDebugGUI();
+		Player::Instance().DrawDebugGUI();
 	
 	}
 }

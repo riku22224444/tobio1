@@ -8,6 +8,13 @@
 //ƒvƒŒƒCƒ„[
 class Player : public Character {
 public:
+
+	static Player& Instance() {
+		static Player instance;
+
+		return instance;
+	}
+
 	Player();
 	~Player() override;
 

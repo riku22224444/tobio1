@@ -166,6 +166,9 @@
     <ClInclude Include="Source\Graphics\ModelManager.h">
       <Filter>Source\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\EnemyPolice.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -290,6 +293,9 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\ModelManager.cpp">
       <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EnemyPolice.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

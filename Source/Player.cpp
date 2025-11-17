@@ -385,9 +385,6 @@ void Player::drunkenness(float elapsedTime)
 	//		position.y -= randomValue * static_cast<float>(elapsedTime);
 	//	}
 
-
-
-
 	randomTimer += elapsedTime;
 	if (randomTimer >= 2.0f)
 	{

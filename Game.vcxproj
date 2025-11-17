@@ -125,6 +125,7 @@
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\EnemyManager.h" />
     <ClInclude Include="Source\Enemycar.h" />
+    <ClInclude Include="Source\EnemyPolice.h" />
     <ClInclude Include="Source\Framework.h" />
     <ClInclude Include="Source\GameUI.h" />
     <ClInclude Include="Source\Graphics\DebugRenderer.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="Source\Collision.cpp" />
     <ClCompile Include="Source\Enemycar.cpp" />
     <ClCompile Include="Source\EnemyManager.cpp" />
+    <ClCompile Include="Source\EnemyPolice.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\GameUI.cpp" />
     <ClCompile Include="Source\Graphics\DebugRenderer.cpp" />

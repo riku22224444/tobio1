@@ -26,7 +26,6 @@ public:
 	void DrawGUI() {};
 private:
 	Stage* stage = nullptr;
-	Player* player = nullptr;
 	CameraController* cameraController = nullptr;
 	GameUI* gameUI = nullptr;
 
