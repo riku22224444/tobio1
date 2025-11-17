@@ -6,6 +6,8 @@
 #include "EnemyPolice.h"
 #include "ItemManager.h"
 #include "Bottle.h"
+#include "CreatureManager.h"
+#include "Dustbox.h"
 #include"SceneManager.h"
 #include"GameUI.h"
 #include <vector>
@@ -89,6 +91,13 @@ void SceneGame::Initialize()
 		rum->SetPosition(DirectX::XMFLOAT3(i * 73.5f, 0, 2));
 		itemManager.Register(rum);
 	}
+	//物
+	CreatureManager& creatureManager = CreatureManager::Instance();
+	for (int i = 0; i < 1; i++) {
+		Dustbox* dust = new Dustbox();
+		dust->SetPosition(DirectX::XMFLOAT3(i * 0.0f, 0, 2));
+		creatureManager.Register(dust);
+	}
 	gameUI->Initialize();
 	Player::Instance().SetUI(gameUI);
 }
@@ -101,6 +110,8 @@ void SceneGame::Finalize()
 	EnemyManager::Instance().Clear();
 	//アイテム終了化
 	ItemManager::Instance().Clear();
+	//物初期化
+	CreatureManager::Instance().Clear();
 
 	//カメラコントローラー終了化
 	if (cameraController != nullptr) {
@@ -223,6 +234,9 @@ void SceneGame::Update(float elapsedTime)
 		itemManager.Register(rum);
 	}
 
+	//物の更新処理
+	CreatureManager::Instance().Update(elapsedTime);
+
 	gameUI->Update(elapsedTime);
 }
 
@@ -264,6 +278,9 @@ void SceneGame::Render()
 
 		//アイテム描画
 		ItemManager::Instance().Render(dc, shader);
+		
+		//物描画
+		CreatureManager::Instance().Render(dc, shader);
 
 		//プレイヤー描画
 		Player::Instance().Render(dc, shader);
@@ -284,6 +301,9 @@ void SceneGame::Render()
 
 		// アイテムデバッグプリミティブ描画
 		ItemManager::Instance().DrawDebugPrimitive();
+
+		//物デバッグプリミティブ描画
+		CreatureManager::Instance().DrawDebugPrimitive();
 
 		// ラインレンダラ描画実行
 		graphics.GetLineRenderer()->Render(dc, rc.view, rc.projection);
