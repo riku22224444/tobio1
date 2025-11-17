@@ -153,18 +153,35 @@
     <ClInclude Include="Source\Graphics\RenderState.h">
       <Filter>Source\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameUI.h" />
     <ClInclude Include="Source\Scene.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Item.h" />
-    <ClInclude Include="Source\ItemManager.h" />
-    <ClInclude Include="Source\Bottle.h" />
     <ClInclude Include="Source\SceneEnd.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\ModelManager.h">
       <Filter>Source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Bottle.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameUI.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Item.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ItemManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Creature.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CreatureManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dustbox.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -290,6 +307,12 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\ModelManager.cpp">
       <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CreatureManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dustbox.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

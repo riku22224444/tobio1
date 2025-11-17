@@ -122,6 +122,9 @@
     <ClInclude Include="Source\CameraController.h" />
     <ClInclude Include="Source\Character.h" />
     <ClInclude Include="Source\Collision.h" />
+    <ClInclude Include="Source\Creature.h" />
+    <ClInclude Include="Source\CreatureManager.h" />
+    <ClInclude Include="Source\Dustbox.h" />
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\EnemyManager.h" />
     <ClInclude Include="Source\Enemycar.h" />
@@ -170,6 +173,8 @@
     <ClCompile Include="Source\CameraController.cpp" />
     <ClCompile Include="Source\Character.cpp" />
     <ClCompile Include="Source\Collision.cpp" />
+    <ClCompile Include="Source\CreatureManager.cpp" />
+    <ClCompile Include="Source\Dustbox.cpp" />
     <ClCompile Include="Source\Enemycar.cpp" />
     <ClCompile Include="Source\EnemyManager.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
