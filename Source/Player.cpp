@@ -257,7 +257,7 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 
 //移動入力処理
 void Player::InputMove(float elapsedTime) {
-<<<<<<< HEAD
+
 	using namespace DirectX;
 
 	XMFLOAT3 moveVec = GetMoveVec();
@@ -314,14 +314,14 @@ void Player::InputMove(float elapsedTime) {
 	position.z += fwd.z * speed * elapsedTime;
 
 	float gripNow = lerp(grip, 3.0f, t);
-=======
+
 	//進行ベクトル取得
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 	//移動処理
 	Move(moveVec.x, moveVec.z, moveSpeed*4);
 	//旋回処理
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed*2);
->>>>>>> ren
+
 }
 
 
