@@ -9,8 +9,8 @@
 EnemyPolice::EnemyPolice() {
     //車モデルを読み込み
 
-    model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
-
+  //  model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
+    model = new Model("Data/Model/Ptcar/Ptcar2.mdl");//koko//パトカー
     //スケーリング
     scale.x = scale.y = scale.z = 0.01f;
 
