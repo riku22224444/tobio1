@@ -315,11 +315,6 @@ void Player::InputMove(float elapsedTime) {
 
 	float gripNow = lerp(grip, 3.0f, t);
 
-	//移動処理
-	Move(moveVec.x, moveVec.z, moveSpeed*4);
-	//旋回処理
-	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed*2);
-
 }
 
 
