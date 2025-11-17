@@ -93,7 +93,7 @@ void SceneGame::Initialize()
 		Bottle* rum = new Bottle();
 		rum->SetPosition(DirectX::XMFLOAT3(i * 73.5f, 0, 2));
 		itemManager.Register(rum);
-	}s
+	}
 	//•¨
 	CreatureManager& creatureManager = CreatureManager::Instance();
 	for (int i = 0; i < 1; i++) {

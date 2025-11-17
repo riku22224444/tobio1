@@ -315,8 +315,6 @@ void Player::InputMove(float elapsedTime) {
 
 	float gripNow = lerp(grip, 3.0f, t);
 
-	//進行ベクトル取得
-	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 	//移動処理
 	Move(moveVec.x, moveVec.z, moveSpeed*4);
 	//旋回処理
