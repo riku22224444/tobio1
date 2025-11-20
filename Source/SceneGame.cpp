@@ -81,11 +81,11 @@ void SceneGame::Initialize()
 	}*/
 
 	//追尾エネミー
-	for (int i = 0; i < 2; i++) {
-		EnemyPolice* Police = new EnemyPolice();
-		Police->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 10));
-		enemyManager.Register(Police);
-	}
+	//for (int i = 0; i < 2; i++) {
+	//	EnemyPolice* Police = new EnemyPolice();
+	//	Police->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 10));
+	//	enemyManager.Register(Police);
+	//}
 
 	//アイテム(ボトル)初期化
 	ItemManager& itemManager = ItemManager::Instance();

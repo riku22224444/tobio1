@@ -94,4 +94,5 @@ protected:
 	float moveVecX = 0.0f;
 	float moveVecZ = 0.0f;
 	float airControl = 0.3f;
+	float slopeRate = 1.0f;
 };

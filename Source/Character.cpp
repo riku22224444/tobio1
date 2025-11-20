@@ -127,7 +127,7 @@ void Character::UpdateVerticalMove(float elapsedTime)
 {
 	//垂直方向の移動量
 	float my = velocity.y * elapsedTime;
-
+	slopeRate = 0.0f;
 	//落下中
 	if (my < 0.0f) {
 		//レイの開始位置は足元より少し上
@@ -142,6 +142,10 @@ void Character::UpdateVerticalMove(float elapsedTime)
 			//地面に接地している
 			position.y = hit.position.y;
 		
+			//傾斜率の計算
+			float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+			slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+
 			//着地した
 			if (!isGround) {
 				OnLanding();
@@ -214,6 +218,10 @@ void Character::UpdateHorizontalVelocity(float elapsedFrame)
 
 				velocity.x = vx * maxMoveSpeed;
 				velocity.z = vz * maxMoveSpeed;
+			}
+			//下り坂でガタガタしないようにする
+			if (isGround && slopeRate > 0.0f) {
+				velocity.y -= length * slopeRate * elapsedFrame;
 			}
 		}
 	}
