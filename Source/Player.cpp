@@ -204,15 +204,8 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 	v.y = 0.0f;
 	return v;
 }
-
-//移動入力処理
+//移動処理
 void Player::InputMove(float elapsedTime) {
-	////進行ベクトル取得
-	//DirectX::XMFLOAT3 moveVec = GetMoveVec();
-	////移動処理
-	//Move(moveVec.x, moveVec.z, moveSpeed);
-	////旋回処理
-	//Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
 
 	using namespace DirectX;
 
@@ -226,14 +219,13 @@ void Player::InputMove(float elapsedTime) {
 	const float baseAccelRate = 4.0f;             // もともとの加速力
 
 	// ★ ゲージ(t)でブースト（t=0 → 通常、t=1 → ブースト状態）
-	//   値は好みで調整してOK
-	float accelScale = lerp(1.0f, 4.0f, t);  // t=1で加速2倍
-	float speedScale = lerp(1.0f, 3.0f, t);  // t=1で最高速1.5倍
+	float accelScale = lerp(1.0f, 4.0f, t);  // t=1で加速4倍
+	float speedScale = lerp(1.0f, 3.0f, t);  // t=1で最高速3倍
 
 	float maxSpeedNow = baseMaxSpeed * speedScale;   // 今フレームの最高速度
 	float accelRateNow = baseAccelRate * accelScale;   // 今フレームの加速力
 
-	// ★ 目標速度（酔いパワーも足してさらに暴走気味にしてOK）
+	// ★ 目標速度（酔いパワーも足す）
 	float targetSpeed = (maxSpeedNow + drunkenPower) * accel;
 
 	// ★ 加速
@@ -243,7 +235,7 @@ void Player::InputMove(float elapsedTime) {
 	speed = clamp(speed, 0.0f, maxSpeedNow);
 
 
-	// ===== ここから下は今までのハンドル・旋回処理そのままでOK =====
+	// ===== ここから下はハンドル・旋回処理 =====
 
 	float desiredYaw = atan2f(moveVec.x, moveVec.z);
 
@@ -265,14 +257,59 @@ void Player::InputMove(float elapsedTime) {
 	yaw += yawRate * elapsedTime;
 	angle.y = yaw;
 
+	// ---- ここから Character::UpdateHorizontalMove を移植した壁当たり判定 ----
 	XMFLOAT3 fwd = { sinf(yaw), 0, cosf(yaw) };
-	position.x += fwd.x * speed * elapsedTime;
-	position.z += fwd.z * speed * elapsedTime;
 
+	float mx = fwd.x * speed * elapsedTime;
+	float mz = fwd.z * speed * elapsedTime;
+
+	XMFLOAT3 start = { position.x,          position.y + stepOffset, position.z };
+	XMFLOAT3 end = { position.x + mx,     position.y + stepOffset, position.z + mz };
+
+	HitResult hit;
+	if (Stage::Instance().RayCast(start, end, hit))
+	{
+		// 壁までのベクトル
+		XMVECTOR Start = XMLoadFloat3(&hit.position);
+		XMVECTOR End = XMLoadFloat3(&end);
+		XMVECTOR Vec = XMVectorSubtract(End, Start);
+
+		// 壁の法線
+		XMVECTOR Normal = XMLoadFloat3(&hit.normal);
+
+		// 入射ベクトルを法線に射影
+		XMVECTOR Dot = XMVector3Dot(XMVectorNegate(Vec), Normal);
+		Dot = XMVectorScale(Dot, 1.1f); // 少し余裕をもたせて押し出す
+
+		// 補正位置（壁ずり方向）
+		XMVECTOR CollectPosition = XMVectorMultiplyAdd(Normal, Dot, End);
+		XMFLOAT3 collectPosition;
+		XMStoreFloat3(&collectPosition, CollectPosition);
+
+		// 壁ずり方向でもう一回レイキャスト（2回目）
+		HitResult hit2;
+		if (!Stage::Instance().RayCast(start, collectPosition, hit2))
+		{
+			// 壁に当たらなければ補正位置に移動
+			position.x = collectPosition.x;
+			position.z = collectPosition.z;
+		}
+		else
+		{
+			// まだ壁に当たるなら、そこまでで止める
+			position.x = hit2.position.x;
+			position.z = hit2.position.z;
+		}
+	}
+	else
+	{
+		// 壁に当たっていなければ通常移動
+		position.x += mx;
+		position.z += mz;
+	}
+
+	//（今は gripNow 使ってないけど、後で横滑り計算に使うなら残してOK）
 	float gripNow = lerp(grip, 3.0f, t);
-
-
-
 }
 
 
