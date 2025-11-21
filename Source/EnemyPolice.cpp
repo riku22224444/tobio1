@@ -56,13 +56,9 @@ void EnemyPolice::Update(float elapsedTime) {
         float forwardX = sinf(angle.y);
         float forwardZ = cosf(angle.y);
 
-<<<<<<< HEAD
-        float moveSpeed = 4.0f;
-        Move(forwardX, forwardZ, moveSpeed);
-=======
         float moveSpeed = 25.0f;
         Move(elapsedTime, forwardX, forwardZ, moveSpeed);
->>>>>>> kokoko
+
 
         if (!EnemyView())
         {

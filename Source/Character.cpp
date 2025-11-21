@@ -22,7 +22,7 @@ void Character::UpdateTransform() {
 
 
 //ˆÚ“®ˆ—
-void Character::Move( float vx, float vz, float speed) {
+void Character::Move(float elapsedTime, float vx, float vz, float speed) {
 	////ˆÚ“®•ûŒüƒxƒNƒgƒ‹‚ğİ’è
 	moveVecX = vx;
 	moveVecZ = vz;

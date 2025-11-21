@@ -94,13 +94,13 @@ void SceneGame::Initialize()
 		enemyManager.Register(car);
 	}*///一気に出る
 	//追尾エネミー
-<<<<<<< HEAD
+
 	//for (int i = 0; i < 2; i++) {
 	//	EnemyPolice* Police = new EnemyPolice();
 	//	Police->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 10));
 	//	enemyManager.Register(Police);
 	//}
-=======
+
 	/*for (int i = 0; i < 1; i++) {
 		EnemyPolice* Police = new EnemyPolice();
 		Police->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 10));
@@ -112,7 +112,7 @@ void SceneGame::Initialize()
 		police->SetPosition(pos);
 		enemyManager.Register(police);
 	}
->>>>>>> kokoko
+
 
 	//アイテム(ボトル)初期化
 	ItemManager& itemManager = ItemManager::Instance();

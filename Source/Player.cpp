@@ -204,9 +204,9 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 	v.y = 0.0f;
 	return v;
 }
-<<<<<<< HEAD
+
 //移動処理
-=======
+
 
 ////移動処理
 //void Player::Move(float elapsedTime, float vx, float vz, float speed) {
@@ -280,7 +280,6 @@ void Player::Reset()
 }
 
 //移動入力処理
->>>>>>> kokoko
 void Player::InputMove(float elapsedTime) {
 
 	using namespace DirectX;
