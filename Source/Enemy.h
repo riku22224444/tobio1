@@ -16,4 +16,7 @@ public:
 	//デバックプリミティブ描画
 	virtual void DrawDebugPrimitive();
 
+	bool isDead = false;
+	void Destroy() { isDead = true; }
+	bool IsDead() const { return isDead; }
 };

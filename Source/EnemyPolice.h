@@ -20,4 +20,6 @@ private:
 	float ViewRadius = 10.0f;
 	float ViewAngle = 90.0f;
 
+	int frameCounter = 0; // フレームカウンター
+	const int RAYCAST_INTERVAL = 30; // フレームに一度実行する
 };
