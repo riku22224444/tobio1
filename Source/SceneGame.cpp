@@ -30,6 +30,12 @@ std::vector<DirectX::XMFLOAT3> enemySpawnPoints = {
 	{ -74.0f, -0.877f, 91.987f },  // 曲がり角
 	{ 78.404f, -0.474f, 95.122f }    // 右側奥
 };
+//policeポジ
+std::vector<DirectX::XMFLOAT3> enemyPoliceSpawnPoints = {
+	{ 75.375f, 0.0f, 66.5f },
+	{ -79.122f, 0.0f, 95.7f }, // 交差２
+};
+
 // ボトルのスポーン候補座標リスト//kokoko
 std::vector<DirectX::XMFLOAT3> itemSpawnPoints = {
 	{ 75.0f, 0.0f, -36.0f },   // 家の前（画像①）
@@ -71,6 +77,8 @@ void SceneGame::Initialize()
 		0.1f,
 		1000.0f);
 	cameraController = new CameraController();
+	//プレイヤー初期化
+	Player::Instance().Reset();
 
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
@@ -79,13 +87,32 @@ void SceneGame::Initialize()
 		car->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 		enemyManager.Register(car);
 	}*/
-
+	/*for (const auto& pos : enemySpawnPoints)
+	{
+		Enemycar* car = new Enemycar();
+		car->SetPosition(pos);
+		enemyManager.Register(car);
+	}*///一気に出る
 	//追尾エネミー
+<<<<<<< HEAD
 	//for (int i = 0; i < 2; i++) {
 	//	EnemyPolice* Police = new EnemyPolice();
 	//	Police->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 10));
 	//	enemyManager.Register(Police);
 	//}
+=======
+	/*for (int i = 0; i < 1; i++) {
+		EnemyPolice* Police = new EnemyPolice();
+		Police->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 10));
+		enemyManager.Register(Police);
+	}*/
+	for (const auto& pos : enemyPoliceSpawnPoints)
+	{
+		EnemyPolice* police = new EnemyPolice();
+		police->SetPosition(pos);
+		enemyManager.Register(police);
+	}
+>>>>>>> kokoko
 
 	//アイテム(ボトル)初期化
 	ItemManager& itemManager = ItemManager::Instance();
@@ -154,18 +181,15 @@ void SceneGame::Update(float elapsedTime)
 	// ====================== =
 	// 敵のスポーン処理
 	// =======================kokoko
-	spawnTimer += elapsedTime;
 
+	spawnTimer += elapsedTime;
 	if (spawnTimer >= spawnInterval)
 	{
 		spawnTimer = 0.0f; // タイマーリセット
-
 		EnemyManager& enemyManager = EnemyManager::Instance();
-
 		// マップ全体での敵の上限をチェック
-		if (enemyManager.GetEnemyCount() >= MAX_ENEMY)
+		if (enemyManager.GetEnemyCount() >= MAX_CAR)
 			return; // これ以上出現させない
-
 		// ======= ランダムに1つの座標を選ぶ（前回と同じ場所を避ける） =======
 		static int lastIndex = -1;  // ←★関数内static（1回だけ保持される）
 		int index;
@@ -173,7 +197,6 @@ void SceneGame::Update(float elapsedTime)
 			index = (int)GetRandomFloat(0, (float)enemySpawnPoints.size());
 		} while (index == lastIndex && enemySpawnPoints.size() > 1);
 		lastIndex = index;
-
 		// ======= 選ばれたスポーンポイントを取得 =======
 		DirectX::XMFLOAT3 pos = enemySpawnPoints[index];
 
@@ -192,7 +215,10 @@ void SceneGame::Update(float elapsedTime)
 		car->SetPosition({ pos.x, y, pos.z });
 		enemyManager.Register(car);
 	}
+	spawnTimer += elapsedTime;
 
+
+	
 
 
 	//アイテム更新処理

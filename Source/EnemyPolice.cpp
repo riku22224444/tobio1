@@ -56,8 +56,13 @@ void EnemyPolice::Update(float elapsedTime) {
         float forwardX = sinf(angle.y);
         float forwardZ = cosf(angle.y);
 
+<<<<<<< HEAD
         float moveSpeed = 4.0f;
         Move(forwardX, forwardZ, moveSpeed);
+=======
+        float moveSpeed = 25.0f;
+        Move(elapsedTime, forwardX, forwardZ, moveSpeed);
+>>>>>>> kokoko
 
         if (!EnemyView())
         {
@@ -66,17 +71,21 @@ void EnemyPolice::Update(float elapsedTime) {
         break;
     }
 
-    }
-
-    // ‘«Œ³‚ÉƒŒƒC‚ð”ò‚Î‚µ‚Ä’n–Ê‚Ì‚‚³‚ðŽæ“¾
+   }
+    frameCounter++;
+    if (frameCounter >= RAYCAST_INTERVAL) {
+        frameCounter = 0;
+ //    ‘«Œ³‚ÉƒŒƒC‚ð”ò‚Î‚µ‚Ä’n–Ê‚Ì‚‚³‚ðŽæ“¾
     HitResult hit;
     DirectX::XMFLOAT3 start = { position.x, position.y + 1.0f, position.z };
     DirectX::XMFLOAT3 end = { position.x, position.y - 100.0f, position.z };
     if (Stage::Instance().RayCast(start, end, hit)) {
         position.y = hit.position.y;
     }
+    }
 }
-//•`‰æˆ—
+
+    //•`‰æˆ—
 void EnemyPolice::Render(ID3D11DeviceContext* dc, Shader* shader) {
     shader->Draw(dc, model);
 }

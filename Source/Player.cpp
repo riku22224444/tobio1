@@ -204,7 +204,83 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 	v.y = 0.0f;
 	return v;
 }
+<<<<<<< HEAD
 //移動処理
+=======
+
+////移動処理
+//void Player::Move(float elapsedTime, float vx, float vz, float speed) {
+//	speed *= elapsedTime;
+//	position.x += vx * speed;
+//	position.z += vz * speed;
+//}
+//
+//void Player::Turn(float elapsedTime, float vx, float vz, float speed) {
+//	speed += elapsedTime;
+//
+//	//進行ベクトルがゼロベクトルの場合は処理する必要なし
+//	float length = sqrtf(vx * vx + vz * vz);
+//	if (length < 0.001f)return;
+//
+//	//進行ベクトルを単位ベクトル化
+//	vx /= length;
+//	vz /= length;
+//
+//	//自身の回転値から前方向を求める
+//	float frontX = sinf(angle.y);
+//	float frontZ = cosf(angle.y);
+//
+//
+//	//回転角を求める為、2つの単位ベクトルの内積を計算する
+//	float dot = (frontX * vx) + (frontZ * vz);
+//
+//	//内積値は-1.0～1.0で表現されており、2つの単位ベクトルの角度が
+//	//小さいほどに1.0に近づくという性質を利用して回転速度を調整する
+//	float rot = 1.0f - dot;
+//	if (rot > speed)rot = speed;
+//
+//	//左右判定を行うために2つの単位ベクトルの外積を計算する
+//	float cross = (frontZ * vx) - (frontX * vz);
+//
+//	//2Dの外積値が正の場合か負の場合によって左右判定が行える
+//	//左右判定を行うことによって左右回転を選択する
+//
+//	if (cross < 0.0f) {
+//		
+//		//angle.y -= speed;
+//		angle.y -= rot;
+//	}
+//	else {
+//		
+//		//angle.y += speed;
+//		angle.y += rot;
+//	}
+//
+//}
+// 
+
+//Player初期化
+void Player::Reset()
+{
+	HP = 3;
+	position.x = 73.0f;
+	position.y = 0.0f;
+	position.z = 0.0f;
+	angle.x = angle.y = angle.z = 0.0f;
+	moveSpeed = 5.0f;
+	turnSpeed = DirectX::XMConvertToRadians(720);
+	// その他のステータスもリセットが必要
+	// 無敵時間もリセット
+	invincibleTime = 0;
+	isDamage = false;
+	// 酔いシステムのタイマー/値もリセット
+	randomTimer = 0.0f;
+	axisX = 0.0f;
+	axisY = 0.0f;
+}
+
+//移動入力処理
+>>>>>>> kokoko
 void Player::InputMove(float elapsedTime) {
 
 	using namespace DirectX;
@@ -344,8 +420,8 @@ void Player::CollisionPlayerVsBottleDelete()
 	ItemManager& itemManager = ItemManager::Instance();
 
 	// 全てのアイテムと総当たりで衝突処理
-	int enemyCount = itemManager.GetItemCount();
-	for (int i = 0; i < enemyCount; ++i)
+	int itemCount = itemManager.GetItemCount();
+	for (int i = 0; i < itemCount; ++i)
 	{
 		Item* item = itemManager.GetItem(i);
 
@@ -402,6 +478,7 @@ void Player::PlayerDamage(float elapsedTime)
 			}
 		}
 	}
+
 }
 void Player::drunkenness(float elapsedTime)
 {
