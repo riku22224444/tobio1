@@ -29,7 +29,8 @@ public:
 	//描画処理
 	void Render(ID3D11DeviceContext* dc, Shader* shader);
 	void drunkenness(float elapsedTime);
-	
+	// シーン開始時にプレイヤーの状態を初期化する関数
+	void Reset();
 	void SetUI(GameUI* p) { ui = p; };
 private :
 	//スティック入力値から移動ベクトルを取得
@@ -46,7 +47,9 @@ private :
 
 	//プレイヤーとボトルとの消滅処理
 	void CollisionPlayerVsBottleDelete();
-
+	
+ 
+	
 	//移動入力処理
 
 	void InputMove(float elapsedTime);

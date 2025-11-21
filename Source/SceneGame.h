@@ -29,9 +29,12 @@ private:
 	CameraController* cameraController = nullptr;
 	GameUI* gameUI = nullptr;
 
-	int MAX_ENEMY = 5;
+	//int MAX_ENEMY = 5;
+	const int MAX_CAR = 3;
+	const int MAX_POLICE = 2;
 	int MAX_ITEM = 14; // 同時出現数の上限
 	float lastIndex = 0;// スポーン位置履歴
+	float lastIndexP = 0;// スポーン位置履歴
 	float lastIndexBO = 0;// ボトルスポーン位置履歴
 	float spawnInterval = 2.0f;  // スポーン間隔（秒）
 	float spawnIntervalBO = 1.5f;  // スポーン間隔（秒）

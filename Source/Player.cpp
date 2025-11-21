@@ -247,6 +247,27 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const {
 //	}
 //
 //}
+// 
+
+//Player初期化
+void Player::Reset()
+{
+	HP = 3;
+	position.x = 73.0f;
+	position.y = 0.0f;
+	position.z = 0.0f;
+	angle.x = angle.y = angle.z = 0.0f;
+	moveSpeed = 5.0f;
+	turnSpeed = DirectX::XMConvertToRadians(720);
+	// その他のステータスもリセットが必要
+	// 無敵時間もリセット
+	invincibleTime = 0;
+	isDamage = false;
+	// 酔いシステムのタイマー/値もリセット
+	randomTimer = 0.0f;
+	axisX = 0.0f;
+	axisY = 0.0f;
+}
 
 //移動入力処理
 void Player::InputMove(float elapsedTime) {
@@ -348,6 +369,7 @@ void Player::PlayerDamage(float elapsedTime)
 			}
 		}
 	}
+
 }
 void Player::drunkenness(float elapsedTime)
 {
