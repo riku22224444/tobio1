@@ -311,8 +311,8 @@ void Player::CollisionPlayerVsBottleDelete()
 	ItemManager& itemManager = ItemManager::Instance();
 
 	// 全てのアイテムと総当たりで衝突処理
-	int enemyCount = itemManager.GetItemCount();
-	for (int i = 0; i < enemyCount; ++i)
+	int itemCount = itemManager.GetItemCount();
+	for (int i = 0; i < itemCount; ++i)
 	{
 		Item* item = itemManager.GetItem(i);
 
