@@ -45,13 +45,14 @@ void GameUI::Update(float elapsedTime)
     SHORT keyState = GetAsyncKeyState(VK_SPACE);
     bool isPressed = (keyState & 0x8000);
     // 押した瞬間だけ反応
-    if (isPressed && !wasSpacePressed /*&& cool_time_switch == true*/)
+    if (isPressed && !wasSpacePressed &&iteam!=0)
     {
         // スペース押した瞬間の処理
 
 
         gauge_UP_switch = true;
         cool_time_switch = false;
+        --iteam;
     }
 
     if (gauge >= gauge_MIN)
@@ -180,9 +181,9 @@ void GameUI::Render()
         face->textout(dc, buf, textX, textY, 64, 64, 1, 1, 1, 1);
         std::snprintf(buf, sizeof(buf),
             "%3d",
-            clearcount
+            iteam
         );
-        face->textout(dc, buf, screenWidth / 2 - 10, screenHeight - 64, 50, 50, 1, 1, 1, 1);
+        face->textout(dc, buf, screenWidth / 2 - 30, screenHeight - 45, 50, 50, 1, 1, 1, 1);
         // 例：タイトルも出す
        // face->textout(dc, "POWER", textX, textY - 20.0f, cellW, cellH, 1, 1, 1, 1);
     }

@@ -13,6 +13,7 @@ public:
     float gauge = 1;
     int gauge_MAX = 320 - 50;
     int gauge_MIN = 620 - 32;
+    int iteam = 0;
     bool gauge_UP_switch = false;
     bool cool_time_switch = true;
 private:

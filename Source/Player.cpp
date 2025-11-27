@@ -437,8 +437,7 @@ void Player::CollisionPlayerVsBottleDelete()
 			moveSpeed += 1.3f;
 			item->Destroy();
 			DeleteCount++;
-			ui->gauge_UP_switch = true;
-			ui->cool_time_switch = false;
+			ui->iteam++;
 		}
 	}
 }
