@@ -284,48 +284,50 @@ void Player::InputMove(float elapsedTime) {
 
 	using namespace DirectX;
 
-	XMFLOAT3 moveVec = GetMoveVec();
+	// === 前後入力：axisY の符号で 前進/後退 を決める ===
+	float forwardIn = clamp(axisY, -1.0f, 1.0f);     // 上(前)＝+1, 下(後)＝-1
+	float forwardMag = fabsf(forwardIn);              // 押し込み量 0..1
+	float forwardSign = (forwardIn >= 0.0f) ? 1.0f : -1.0f;
 
-	// 入力があるときだけ加速
-	float accel = (fabs(moveVec.x) > 0.1f || fabs(moveVec.z) > 0.1f) ? 1.0f : 0.0f;
-
-	// ★ 基本パラメータ（今までの値）
-	const float baseMaxSpeed = moveSpeed * 4.0f; // もともとの最高速
+	// ★ 基本パラメータ（元の値）
+	const float baseMaxSpeed = moveSpeed * 4.0f;  // もともとの最高速（前進）
 	const float baseAccelRate = 4.0f;             // もともとの加速力
 
-	// ★ ゲージ(t)でブースト（t=0 → 通常、t=1 → ブースト状態）
-	float accelScale = lerp(1.0f, 4.0f, t);  // t=1で加速4倍
-	float speedScale = lerp(1.0f, 3.0f, t);  // t=1で最高速3倍
+	// ★ ゲージ(t)でブースト
+	float accelScale = lerp(1.0f, 4.0f, t);   // t=1で加速4倍
+	float speedScale = lerp(1.0f, 3.0f, t);   // t=1で最高速3倍
 
-	float maxSpeedNow = baseMaxSpeed * speedScale;   // 今フレームの最高速度
-	float accelRateNow = baseAccelRate * accelScale;   // 今フレームの加速力
+	// 前進/後退の別最高速（後退は遅めに抑える）
+	float maxSpeedFwd = baseMaxSpeed * speedScale;   // 前進最高速
+	float maxSpeedRev = maxSpeedFwd * 0.4f;          // 後退最高速（40%に設定：好みで）
 
-	// ★ 目標速度（酔いパワーも足す）
-	float targetSpeed = (maxSpeedNow + drunkenPower) * accel;
+	float accelRateNow = baseAccelRate * accelScale;
 
-	// ★ 加速
+	// ★ 目標速度（符号付き）：前進は +、後退は -
+	float signedMaxNow = (forwardSign > 0.0f) ? maxSpeedFwd : maxSpeedRev;
+	float targetSpeed = forwardSign * (signedMaxNow + drunkenPower) * forwardMag;
+
+	// ★ 加速：符号ごと target に追従（減速もこの一式でOK）
 	speed += (targetSpeed - speed) * accelRateNow * elapsedTime;
 
-	// ★ 最高速を超えないようにクランプ
-	speed = clamp(speed, 0.0f, maxSpeedNow);
+	// ★ 最高速クランプ：前後で別上限、かつ符号を保つ
+	speed = clamp(speed, -maxSpeedRev, maxSpeedFwd);
 
-
-	// ===== ここから下はハンドル・旋回処理 =====
-
-	float desiredYaw = atan2f(moveVec.x, moveVec.z);
-
-	float steerScale = 1.0f - 0.85f * t;
-	float rateScale = 1.0f - 0.5f * t;
+	// ===== ハンドル・旋回（後退時は左右が反転するのを考慮） =====
+	float steerScale = 1.0f - 0.85f * t;      // ブースト中は舵角を少し弱める
+	float rateScale = 1.0f - 0.5f * t;      // 旋回レートも弱める
 
 	float steerInput = clamp(axisX, -1.0f, 1.0f);
 	float targetSteer = (maxSteer * steerScale) * steerInput;
 
 	float maxDelta = steerRate * rateScale * elapsedTime;
-	float delta = targetSteer - steerAngle;
-	delta = clamp(delta, -maxDelta, maxDelta);
+	float delta = clamp(targetSteer - steerAngle, -maxDelta, maxDelta);
 	steerAngle += delta;
 
-	float yawRate = (speed / wheelBase) * steerAngle;
+	// 速度の符号で旋回向きが反転（車のバックと同じ挙動）
+	float dirSign = (speed >= 0.0f) ? 1.0f : -1.0f;
+
+	float yawRate = ((fabsf(speed) / wheelBase) * steerAngle) * dirSign;
 	float maxYaw = maxYawRate * (1.0f - 0.4f * t);
 	yawRate = clamp(yawRate, -maxYaw, maxYaw);
 
