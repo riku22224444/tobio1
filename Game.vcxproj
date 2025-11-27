@@ -150,6 +150,7 @@
     <ClInclude Include="Source\Item.h" />
     <ClInclude Include="Source\ItemManager.h" />
     <ClInclude Include="Source\Logger.h" />
+    <ClInclude Include="Source\Mathf.h" />
     <ClInclude Include="Source\Misc.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Scene.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Source\ItemManager.cpp" />
     <ClCompile Include="Source\Logger.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Mathf.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\SceneEnd.cpp" />
     <ClCompile Include="Source\SceneGame.cpp" />

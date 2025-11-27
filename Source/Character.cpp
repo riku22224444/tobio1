@@ -1,5 +1,7 @@
 #include"Character.h"
 #include"Stage.h"
+#include"Mathf.h"
+
 
 //行列更新処理
 void Character::UpdateTransform() {
@@ -7,8 +9,10 @@ void Character::UpdateTransform() {
 	//スケール行列を作成
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y,scale.z);
 
-   //回転行列を作成
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x,angle.y,angle.z);
+	DirectX::XMMATRIX X = DirectX::XMMatrixRotationX(angle.x);
+	DirectX::XMMATRIX Y = DirectX::XMMatrixRotationY(angle.y);
+	DirectX::XMMATRIX Z = DirectX::XMMatrixRotationZ(angle.z);
+	DirectX::XMMATRIX R = Y * X * Z;
 
 	//位置行列を作成
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
@@ -128,6 +132,10 @@ void Character::UpdateVerticalMove(float elapsedTime)
 	//垂直方向の移動量
 	float my = velocity.y * elapsedTime;
 	slopeRate = 0.0f;
+	
+	//キャラクターのY軸方向となる法線ベクトル
+	DirectX::XMFLOAT3 normal = { 0,1,0 };
+
 	//落下中
 	if (my < 0.0f) {
 		//レイの開始位置は足元より少し上
@@ -139,6 +147,10 @@ void Character::UpdateVerticalMove(float elapsedTime)
 		HitResult hit;
 		if (Stage::Instance().RayCast(start, end, hit)) 
 		{
+
+			//法線ベクトル取得
+			normal = hit.normal;
+
 			//地面に接地している
 			position.y = hit.position.y;
 		
@@ -164,6 +176,17 @@ void Character::UpdateVerticalMove(float elapsedTime)
 	else if (my > 0.0f) {
 		position.y += my;
 		isGround = false;
+	}
+	//15
+	//地面の向きに沿うようにXZ軸回転
+	{
+	
+		float ax = atan2f(normal.z, normal.y);
+		float az = -atan2f(normal.x, normal.y);
+
+		//線形補完で滑らかに回転する
+		angle.x = Mathf::Lerp(angle.x, ax, 0.2f);
+		angle.z = Mathf::Lerp(angle.z, az, 0.2f);
 	}
 }
 
