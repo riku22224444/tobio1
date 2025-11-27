@@ -20,7 +20,7 @@ private:
     Sprite* sprite = nullptr;
     Sprite* sprite2 = nullptr;
     Sprite* face = nullptr;
-
+    Sprite* Bottole = nullptr;
 
 
     int clearcount = 0;

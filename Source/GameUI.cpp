@@ -10,7 +10,7 @@ void GameUI::Initialize()
     // スプライトの生成
     sprite = new Sprite("Data/Sprite/cage.png");
     sprite2 = new Sprite("Data/Sprite/yazirusi.png");
-
+    Bottole = new Sprite("Data/Sprite/Bottole.png");
 
     face = new Sprite("Data/Font/font1.png");
 
@@ -141,7 +141,10 @@ void GameUI::Render()
         screenWidth - 64, 300, 84, 320,  // x, y, 幅, 高さ
         0,
         1, 1, 1, 1);
-
+    Bottole->Render(dc,
+        screenWidth / 2, screenHeight - 128 + 20, 128, 128,  // x, y, 幅, 高さ
+        0,
+        1, 1, 1, 1);
     // yazirusi.png（透過付き）
     sprite2->Render(dc,
         screenWidth - 64 - 64, gauge, 64, 64,
@@ -175,7 +178,11 @@ void GameUI::Render()
 
         // 白文字で描画（RGBA）
         face->textout(dc, buf, textX, textY, 64, 64, 1, 1, 1, 1);
-
+        std::snprintf(buf, sizeof(buf),
+            "%3d",
+            clearcount
+        );
+        face->textout(dc, buf, screenWidth / 2 - 10, screenHeight - 64, 50, 50, 1, 1, 1, 1);
         // 例：タイトルも出す
        // face->textout(dc, "POWER", textX, textY - 20.0f, cellW, cellH, 1, 1, 1, 1);
     }

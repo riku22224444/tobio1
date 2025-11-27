@@ -3,7 +3,7 @@
 #include "Sprite.h"
 #include "Misc.h"
 #include "Graphics/Graphics.h"
-
+#include <cmath>
 // コンストラクタ
 Sprite::Sprite()
 	: Sprite(nullptr)
@@ -354,21 +354,113 @@ void Sprite::Render(ID3D11DeviceContext *immediate_context,
 		immediate_context->Draw(4, 0);
 	}
 }
-void Sprite::textout(ID3D11DeviceContext* immediate_context, std::string s,
-	float x, float y, float w, float h, float r, float g, float b, float a)
+//void Sprite::textout(ID3D11DeviceContext* immediate_context, std::string s,
+//	float x, float y, float w, float h, float r, float g, float b, float a)
+//{
+//	float sw = static_cast<float>(textureWidth / 16);
+//	float sh = static_cast<float>(textureHeight / 16);
+//	float carriage = 0;
+//	for (const char c : s)
+//	{
+//		Render(immediate_context, x + carriage, y, w, h,
+//			sw * (c & 0x0F), sh * (c >> 4), sw, sh,
+//			0, r, g, b, a);
+//		carriage += w;
+//	}
+//
+//
+//}
+ID3D11SamplerState* Sprite::s_fontPointClamp = nullptr;
+
+void Sprite::textout(ID3D11DeviceContext* dc,
+	const char* text,
+	float x, float y,
+	float drawW, float drawH,
+	float r, float g, float b, float a)
 {
-	float sw = static_cast<float>(textureWidth / 16);
-	float sh = static_cast<float>(textureHeight / 16);
-	float carriage = 0;
-	for (const char c : s)
-	{
-		Render(immediate_context, x + carriage, y, w, h,
-			sw * (c & 0x0F), sh * (c >> 4), sw, sh,
-			0, r, g, b, a);
-		carriage += w;
+	if (!text || !text[0]) return;
+
+	// --- サンプラ（POINT+CLAMP）を1回だけ作る ---
+	if (!s_fontPointClamp) {
+		D3D11_SAMPLER_DESC sd{};
+		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		sd.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sd.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sd.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sd.MaxLOD = D3D11_FLOAT32_MAX;
+
+		// Graphics::Instance() が使えるならそれで
+		ID3D11Device* dev = Graphics::Instance().GetDevice();
+		if (dev) dev->CreateSamplerState(&sd, &s_fontPointClamp);
+	}
+	if (s_fontPointClamp) {
+		dc->PSSetSamplers(0, 1, &s_fontPointClamp);
 	}
 
+	// --- フォントアトラス仕様 ---
+	constexpr float TEX = 512.0f;  // 画像サイズ
+	constexpr float CELL = 32.0f;   // 1マス
+	constexpr int   GRID = 16;      // 16×16
+	constexpr float PIXOFF = 0.5f;   // ★ハーフピクセル内側
 
+	// 改行・スペース・タブ
+	const float startX = x;
+	const float advX = drawW;      // 等幅進み
+	const float advY = drawH;
+
+	for (const unsigned char* p = (const unsigned char*)text; *p; ++p)
+	{
+		unsigned char ch = *p;
+
+		// 制御文字
+		if (ch == '\n') { x = startX; y += advY; continue; }
+		if (ch == '\r') { continue; }
+		if (ch == '\t') { x += advX * 4.0f; continue; }
+		// スペース
+		if (ch == ' ') { x += advX; continue; }
+
+		// --- インデックス → UV（±0.5px の内側）---
+		int col = ch % GRID;     // 0..15
+		int row = ch / GRID;     // 0..15
+
+		float u0 = (col * CELL + PIXOFF) / TEX;
+		float v0 = (row * CELL + PIXOFF) / TEX;
+		float u1 = ((col + 1) * CELL - PIXOFF) / TEX;
+		float v1 = ((row + 1) * CELL - PIXOFF) / TEX;
+
+		// --- 1文字描画（あなたの環境のUV描画に合わせて）---
+		// 既存の四角描画があるはずなのでそこにUVを渡す
+		DrawUV(dc, std::floor(x), std::floor(y), drawW, drawH,
+			u0, v0, u1, v1, r, g, b, a);
+
+		x += advX; // 次の文字へ
+	}
+}
+
+void Sprite::DrawUV(ID3D11DeviceContext* dc,
+	float x, float y, float w, float h,
+	float u0, float v0, float u1, float v1,
+	float r, float g, float b, float a)
+{
+	// --- UV(0..1) をピクセル座標に変換 ---
+	const float sx = u0 * static_cast<float>(textureWidth);
+	const float sy = v0 * static_cast<float>(textureHeight);
+	const float sw = (u1 - u0) * static_cast<float>(textureWidth);
+	const float sh = (v1 - v0) * static_cast<float>(textureHeight);
+
+	// --- フォント用サンプラ（POINT+CLAMP）に一時的に切り替え ---
+	// samplerState は Render() 内で使用されるメンバの ComPtr なので、
+	// 一旦退避して、POINT+CLAMP をセット→描画→元に戻す。
+	auto oldSampler = samplerState;               // 退避（参照カウント維持）
+	if (s_fontPointClamp) {
+		samplerState = s_fontPointClamp;          // ここで AddRef される
+	}
+
+	// 角度は 0（文字は回転なし）
+	Render(dc, x, y, w, h, sx, sy, sw, sh, 0.0f, r, g, b, a);
+
+	// 元のサンプラに戻す
+	samplerState = oldSampler;                    // 退避したものに復帰
 }
 void Sprite::Render(ID3D11DeviceContext* dc,
 	float dx, float dy,

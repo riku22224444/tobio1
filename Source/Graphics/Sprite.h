@@ -33,9 +33,17 @@ public:
 		float dw, float dh,
 		float angle,
 		float r, float g, float b, float a) const;
-
-	void Sprite::textout(ID3D11DeviceContext* immediate_context, std::string s,
-		float x, float y, float w, float h, float r, float g, float b, float a);
+	void textout(ID3D11DeviceContext* dc,
+		const char* text,
+		float x, float y,
+		float drawW, float drawH,
+		float r, float g, float b, float a);
+	void DrawUV(ID3D11DeviceContext* dc,
+		float x, float y, float w, float h,
+		float u0, float v0, float u1, float v1,
+		float r, float g, float b, float a);
+	/*void Sprite::textout(ID3D11DeviceContext* immediate_context, std::string s,
+		float x, float y, float w, float h, float r, float g, float b, float a);*/
 	// テクスチャ幅取得
 	int GetTextureWidth() const { return textureWidth; }
 
@@ -44,6 +52,7 @@ public:
 
 
 private:
+	static ID3D11SamplerState* s_fontPointClamp;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>			vertexShader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>			pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>			inputLayout;
