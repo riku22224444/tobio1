@@ -1,32 +1,32 @@
 #include "Graphics/Graphics.h"
-#include "SceneTitle.h"
+#include "SceneTutorial.h"
 #include "Input/Input.h"
 #include "SceneGame.h"
 #include "SceneManager.h"
 #include "SceneLoading.h"
-#include "SceneTutorial.h"
 #include "Camera.h"
 
 //初期化
-void SceneTitle::Initialize()
+void SceneTutorial::Initialize()
 {
 	//スプライト初期化
-	sprite = new Sprite("Data/Sprite/Title.png");
+	sprite1 = new Sprite("Data/Sprite/Tutorial_1.png");
+	sprite2 = new Sprite("Data/Sprite/Tutorial_2.png");
 }
 
 //終了化
-void SceneTitle::Finalize()
+void SceneTutorial::Finalize()
 {
 	//スプライト終了化
-	if (sprite != nullptr)
+	if (sprite1 != nullptr)
 	{
-		delete sprite;
-		sprite = nullptr;
+		delete sprite1;
+		sprite1 = nullptr;
 	}
 }
 
 //更新処理
-void SceneTitle::Update(float elapsedTime)
+void SceneTutorial::Update(float elapsedTime)
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
@@ -37,18 +37,19 @@ void SceneTitle::Update(float elapsedTime)
 		| GamePad::BTN_X
 		| GamePad::BTN_Y
 		;
+
 	if (gamePad.GetButtonDown() & anyButton)
 	{
-		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTutorial));
+		if (page == 1)
+			SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+		else
+		page++;
 	}
-
-
 }
 
 //描画処理
-void SceneTitle::Render()
+void SceneTutorial::Render()
 {
-
 	// ======== 2Dスプライト描画 ========
 	{
 		Graphics& graphics = Graphics::Instance();
@@ -69,17 +70,17 @@ void SceneTitle::Render()
 			// タイトル（スプライト）描画
 			float screenWidth = static_cast<float>(graphics.GetScreenWidth());
 			float screenHeight = static_cast<float>(graphics.GetScreenHeight());
-			sprite->Render(dc,				//&rc
-				0, 0, 					//dx , dy , dz
-				screenWidth, screenHeight,	//dw , dh
-				0,							//angle
-				1, 1, 1, 1);				//color
+
+			if(page == 0)
+			sprite1->Render(dc, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+			else
+			sprite2->Render(dc, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
 		}
 	}
 }
 
 //GUI描画
-void SceneTitle::DrawGUI()
+void SceneTutorial::DrawGUI()
 {
 
 }
