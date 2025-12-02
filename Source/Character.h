@@ -1,98 +1,83 @@
 #pragma once
-#include<DirectXMath.h>
+#include <DirectXMath.h>
 
-//キャラクター
+// キャラクター
 class Character {
 public:
-	Character() {}
-	virtual ~Character() {}
+    Character() {}
+    virtual ~Character() {}
 
-	//位置取得
-	const DirectX::XMFLOAT3& GetPosition() const { return position; }
+    // 位置/回転/スケール
+    const DirectX::XMFLOAT3& GetPosition() const { return position; }
+    void SetPosition(const DirectX::XMFLOAT3& p) { position = p; }
 
-	//位置設定
-	void SetPosition(const DirectX::XMFLOAT3& position) { this->position = position; }
+    const DirectX::XMFLOAT3& GetAngle() const { return angle; }
+    void SetAngle(const DirectX::XMFLOAT3& a) { angle = a; }
 
+    const DirectX::XMFLOAT3& GetScale() const { return scale; }
+    void SetScale(const DirectX::XMFLOAT3& s) { scale = s; }
 
-	//回転取得
-	const DirectX::XMFLOAT3& GetAngle()const { return angle; }
+    // 行列更新
+    void UpdateTransform();
 
-	//回転設定
-	void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; }
+    // 接地
+    bool IsGround() const { return isGround; }
 
-	//スケール取得
-	const DirectX::XMFLOAT3& GetScale() const { return scale; }
+    // 形状
+    float GetRadius() const { return radius; }
+    float GetHeight() const { return height; }  // ← 誤字修正
 
-	//スケール取得
-	void SetScale(const DirectX::XMFLOAT3& scale) { this->scale = scale; }
+    // 速度系更新
+    void UpdateVelocity(float elapsedTime);
 
-//行列更新処理
-	void UpdateTransform();
-
-	// 地面に接地しているか
-	bool IsGround() const { return isGround; }
-
-	
-
-	//半径取得
-	float GetRadius() const { return radius; }
-
-	//09
-	//速力処理更新
-	void UpdateVelocity(float elapsedTime);
-
-	
-
-
-	//高さ取得
-	float GrtHeigth()const { return height; }
-
-private:
-
-	//垂直速力更新処理
-	void UpdateVerticalVelocity(float elapsedFrame);
-
-
-	//垂直移動更新処理
-	void Character::UpdateVerticalMove(float elapsedTime);
-
+    // （テスト用）ワールド衝突の無効化スイッチ
+    void SetIgnoreWorldCollision(bool b) { ignoreWorldCollision = b; }
+    bool GetIgnoreWorldCollision() const { return ignoreWorldCollision; }
 
 protected:
-	//移動処理
-	void Move(float elapsedTime, float vx, float vz, float speed);
+    // 垂直・水平の内部処理
+    void UpdateVerticalVelocity(float elapsedFrame);
+    void UpdateVerticalMove(float elapsedTime);
+    void UpdateHorizontalVelocity(float elapsedFrame);
+    void UpdateHorizontalMove(float elapsedTime);
 
-	//旋回処理
-	void Turn(float elapsedTime, float vx, float vz, float speed);
+    // 操作
+    void Move(float elapsedTime, float vx, float vz, float speed);
+    void Turn(float elapsedTime, float vx, float vz, float speed);
 
-	// 着地した時に呼ばれる
-	virtual void OnLanding() {}
-
-	//水平速力更新処理
-	void UpdateHorizontalVelocity(float elapsedFrame);
-
-	// 水平移動更新処理
-	void UpdateHorizontalMove(float elapsedTime);
+    // 派生が着地時に受け取るフック
+    virtual void OnLanding() {}
 
 protected:
-	DirectX::XMFLOAT3 position = { 0,0,0 };
-	DirectX::XMFLOAT3 angle = { 0,0,0 };
-	DirectX::XMFLOAT3 scale = { 1,1,1 };
-	DirectX::XMFLOAT4X4 transform = {
-	1,0,0,0,
-	0,1,0,0,
-	0,0,1,0,
-	0,0,0,1 };
-	bool				isGround = false;
-	float gravity = -1.0f;
-	DirectX::XMFLOAT3	velocity = { 0, 0, 0 };
-	float height = 2.0f;
-	float radius = 0.5f;
-	float stepOffset = 1.0f;
-	float friction = 0.5f;
-	float acceleration = 1.0f;
-	float maxMoveSpeed = 5.0f;
-	float moveVecX = 0.0f;
-	float moveVecZ = 0.0f;
-	float airControl = 0.3f;
-	float slopeRate = 1.0f;
+    DirectX::XMFLOAT3 position{ 0,0,0 };
+    DirectX::XMFLOAT3 angle{ 0,0,0 };
+    DirectX::XMFLOAT3 scale{ 1,1,1 };
+    DirectX::XMFLOAT4X4 transform{
+        1,0,0,0,
+        0,1,0,0,
+        0,0,1,0,
+        0,0,0,1
+    };
+
+    bool  isGround = false;
+    float gravity = -1.0f;
+
+    DirectX::XMFLOAT3 velocity{ 0,0,0 };
+
+    // 当たり形状
+    float height = 2.0f;
+    float radius = 0.5f;
+    float stepOffset = 1.0f;
+
+    // モーション・地形
+    float friction = 0.5f;
+    float acceleration = 1.0f;
+    float maxMoveSpeed = 5.0f;
+    float moveVecX = 0.0f;
+    float moveVecZ = 0.0f;
+    float airControl = 0.3f;
+    float slopeRate = 1.0f;
+
+    // ← 追加：このフラグが true の時は床/壁の押し出しを無効化
+    bool ignoreWorldCollision = false;
 };

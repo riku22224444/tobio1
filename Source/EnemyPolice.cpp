@@ -26,23 +26,19 @@ EnemyPolice::~EnemyPolice() {
 }
 
 //更新処理
-void EnemyPolice::Update(float elapsedTime) {
-    //オブジェクト行列を更新
-    UpdateTransform();
-    //モデル行列更新
-    model->UpdateTransform(transform);
-
-    switch (State) {
-    case 0:
+void EnemyPolice::Update(float elapsedTime)
+{
+    switch (State)
     {
-        angle.y += 0.01f;   //仮の動作
+    case 0:
+        angle.y += 0.01f;   // 仮の回転
 
         if (EnemyView())
         {
             State = 1;
         }
         break;
-    }
+
     case 1:
     {
         DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
@@ -56,9 +52,8 @@ void EnemyPolice::Update(float elapsedTime) {
         float forwardX = sinf(angle.y);
         float forwardZ = cosf(angle.y);
 
-        float moveSpeed = 25.0f;
+        float moveSpeed = 8.0f;      // ← 25 は速すぎ。Characterの減速が追いつかない
         Move(elapsedTime, forwardX, forwardZ, moveSpeed);
-
 
         if (!EnemyView())
         {
@@ -66,20 +61,73 @@ void EnemyPolice::Update(float elapsedTime) {
         }
         break;
     }
+    }
 
-   }
-    frameCounter++;
-    if (frameCounter >= RAYCAST_INTERVAL) {
-        frameCounter = 0;
- //    足元にレイを飛ばして地面の高さを取得
-    HitResult hit;
-    DirectX::XMFLOAT3 start = { position.x, position.y + 1.0f, position.z };
-    DirectX::XMFLOAT3 end = { position.x, position.y - 100.0f, position.z };
-    if (Stage::Instance().RayCast(start, end, hit)) {
-        position.y = hit.position.y;
-    }
-    }
+    // ★★ ここ超重要 ★★
+    // Character の物理更新（速度・重力・地形・衝突すべて）
+    UpdateVelocity(elapsedTime);
+
+    // 位置が決まった後に transform を更新する
+    UpdateTransform();
+    model->UpdateTransform(transform);
+
+    // ← 足元レイキャストは削除（Character がすでに担当している）
 }
+
+//void EnemyPolice::Update(float elapsedTime) {
+//    //オブジェクト行列を更新
+//    UpdateTransform();
+//    //モデル行列更新
+//    model->UpdateTransform(transform);
+//
+//    switch (State) {
+//    case 0:
+//    {
+//        angle.y += 0.01f;   //仮の動作
+//
+//        if (EnemyView())
+//        {
+//            State = 1;
+//        }
+//        break;
+//    }
+//    case 1:
+//    {
+//        DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+//
+//        float vx = playerPos.x - position.x;
+//        float vz = playerPos.z - position.z;
+//
+//        float turnSpeed = 2.0f;
+//        Turn(elapsedTime, vx, vz, turnSpeed);
+//
+//        float forwardX = sinf(angle.y);
+//        float forwardZ = cosf(angle.y);
+//
+//        float moveSpeed = 25.0f;
+//        Move(elapsedTime, forwardX, forwardZ, moveSpeed);
+//
+//
+//        if (!EnemyView())
+//        {
+//            State = 0;
+//        }
+//        break;
+//    }
+//
+//   }
+//    frameCounter++;
+//    if (frameCounter >= RAYCAST_INTERVAL) {
+//        frameCounter = 0;
+// //    足元にレイを飛ばして地面の高さを取得
+//    HitResult hit;
+//    DirectX::XMFLOAT3 start = { position.x, position.y + 1.0f, position.z };
+//    DirectX::XMFLOAT3 end = { position.x, position.y - 100.0f, position.z };
+//    if (Stage::Instance().RayCast(start, end, hit)) {
+//        position.y = hit.position.y;
+//    }
+//    }
+//}
 
     //描画処理
 void EnemyPolice::Render(ID3D11DeviceContext* dc, Shader* shader) {
